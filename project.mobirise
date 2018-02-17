@@ -1,6 +1,6 @@
 {
   "settings": {
-    "name": "My Site",
+    "name": "CarBuds",
     "currentPage": "index.html",
     "versionFirst": "4.0.14",
     "uniqCompNum": 33,
@@ -31,7 +31,9 @@
         "isScrollToTopButton": false
       },
       "additionalSetColors": []
-    }
+    },
+    "favicon": "",
+    "noImageResize": ""
   },
   "pages": {
     "index.html": {
