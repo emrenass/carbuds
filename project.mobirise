@@ -4,7 +4,7 @@
     "currentPage": "index.html",
     "versionFirst": "4.0.14",
     "uniqCompNum": 37,
-    "versionPublish": "4.6.5",
+    "versionPublish": "4.8.1",
     "theme": {
       "name": "mobirise4",
       "title": "Mobirise 4",
@@ -35,7 +35,8 @@
     "favicon": "",
     "noImageResize": "",
     "path": "@PROJECT_PATH@",
-    "screenshot": "screenshot.png"
+    "screenshot": "screenshot.png",
+    "siteFonts": []
   },
   "pages": {
     "index.html": {
@@ -482,7 +483,7 @@
             "background-color": "@bgColor"
           },
           "_name": "content8",
-          "_customHTML": "<section class=\"mbr-section content8\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"4\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"4\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#ffffff\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"media-container-row title\">\n            <div class=\"col-12 col-md-8\">\n                <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-primary\" href=\"assets/files/CarBuds_Project_Specification_Report.pdf\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>Specification Report</a> <a class=\"btn btn-primary\" href=\"assets/files/AnalysisReport%20CarBuds.pdf\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>Analysis Report</a> <a class=\"btn btn-primary\" href=\"assets/files/CS491_CarBuds_HighLevelDesignReport.pdf\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>High Level Design Report</a></div>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_customHTML": "<section class=\"mbr-section content8\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"4\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"4\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#ffffff\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"media-container-row title\">\n            <div class=\"col-12 col-md-8\">\n                <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-primary\" href=\"assets/files/CarBuds_Project_Specification_Report.pdf\" data-app-placeholder=\"Type Text\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>Specification Report</a> <a class=\"btn btn-primary\" href=\"assets/files/AnalysisReport%20CarBuds.pdf\" data-app-placeholder=\"Type Text\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>Analysis Report</a> <a class=\"btn btn-primary\" href=\"assets/files/CS491_CarBuds_HighLevelDesignReport.pdf\" data-app-placeholder=\"Type Text\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>High Level Design Report</a> <a class=\"btn btn-primary\" href=\"assets/files/CS491_CarBuds_LowLevelDesignReport.pdf\" data-app-placeholder=\"Type Text\"><span class=\"mbrib-download mbr-iconfont mbr-iconfont-btn\"></span>Low Level Design Report</a></div>\n            </div>\n        </div>\n    </div>\n</section>",
           "_cid": "qJUBCWOp5V",
           "_anchor": "content8-q",
           "_protectedParams": [],
