@@ -1,0 +1,38 @@
+
+{
+	"buildFiles" : [ "/home/ali/cs492/carbuds/Android/CarBuds/app/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"/home/ali/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/ali/cs492/carbuds/Android/CarBuds/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"native-lib-Debug-armeabi-v7a" : 
+		{
+			"abi" : "armeabi-v7a",
+			"artifactName" : "native-lib",
+			"buildCommand" : "/home/ali/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/ali/cs492/carbuds/Android/CarBuds/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target native-lib",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv7-none-linux-androideabi24 --gcc-toolchain=/home/ali/Android/Sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64 --sysroot=/home/ali/Android/Sdk/ndk-bundle/sysroot  -Dnative_lib_EXPORTS -isystem /home/ali/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /home/ali/Android/Sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /home/ali/Android/Sdk/ndk-bundle/sysroot/usr/include/arm-linux-androideabi -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -mfpu=neon -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/ali/cs492/carbuds/Android/CarBuds/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/home/ali/cs492/carbuds/Android/CarBuds/app/.externalNativeBuild/cmake/debug/armeabi-v7a"
+				}
+			],
+			"output" : "/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so",
+			"toolchain" : "12065155990164166470"
+		}
+	},
+	"toolchains" : 
+	{
+		"12065155990164166470" : 
+		{
+			"cCompilerExecutable" : "/home/ali/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/ali/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+		}
+	}
+}
