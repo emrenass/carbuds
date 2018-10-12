@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "outputFile": "/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
                     "source": "/root/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/39cdce8681adb65723c33239ea4b38e8/res/values-sw600dp-v13/values-sw600dp-v13.xml",

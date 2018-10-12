@@ -1,31 +1,31 @@
 #Internal package file, do not edit.
-#Fri Oct 12 22:12:33 EET 2018
-2.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
+#Fri Oct 12 22:02:58 EET 2018
+2.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/dexMerger/debug/1
 5.set=DEX
-0.path=classes.dex
+0.path=lib/x86/libnative-lib.so
 2.baseType=DIRECTORY
-3.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
-2.set=NATIVE_RESOURCE
-1.path=lib/x86/libnative-lib.so
-4.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
+3.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
+2.set=DEX
+1.path=lib/armeabi-v7a/libnative-lib.so
+4.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
 count=7
 5.baseType=DIRECTORY
-2.path=lib/x86_64/libnative-lib.so
-5.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/dexMerger/debug/2
+2.path=classes.dex
+5.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/dexMerger/debug/2
 4.set=NATIVE_RESOURCE
 3.path=lib/arm64-v8a/libnative-lib.so
-6.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/dexMerger/debug/0
+6.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/dexMerger/debug/0
 3.baseType=DIRECTORY
 1.set=NATIVE_RESOURCE
-4.path=lib/armeabi-v7a/libnative-lib.so
+4.path=lib/x86_64/libnative-lib.so
 6.set=DEX
 1.baseType=DIRECTORY
 6.baseType=DIRECTORY
 5.path=classes.dex
-0.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/dexMerger/debug/1
+0.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
 0.baseType=DIRECTORY
 3.set=NATIVE_RESOURCE
 6.path=classes.dex
-1.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
+1.base=/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
 4.baseType=DIRECTORY
-0.set=DEX
+0.set=NATIVE_RESOURCE

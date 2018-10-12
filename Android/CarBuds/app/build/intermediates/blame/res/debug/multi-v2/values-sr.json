@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sr/values-sr.xml",
+            "outputFile": "/home/ali/AndroidStudioProjects/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sr/values-sr.xml",
             "map": [
                 {
                     "source": "/root/.gradle/caches/transforms-1/files-1.1/support-compat-28.0.0.aar/78d265fcb1b7c09a3cdfc641bd67eeb8/res/values-sr/values-sr.xml",
