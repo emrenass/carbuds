@@ -1,3 +1,5 @@
+from Backend_API.database import database_config
+
 class FlaskConfig(object):
     DEBUG = False
     TESTING = False
@@ -19,11 +21,11 @@ class FlaskProductionConfig(FlaskConfig):
         'en': 'English'
     }
 
-    DB_HOST = '35.205.45.78'
-    DB_PORT = '5432'
-    DB_NAME = ''
-    DB_USERNAME = 'admin'
-    DB_PASS = 'admin'
+    DB_HOST = database_config.DB_HOST
+    DB_PORT = database_config.DB_PORT
+    DB_NAME = database_config.DB_NAME
+    DB_USERNAME = database_config.DB_USERNAME
+    DB_PASS = database_config.DB_PASS
 
     HOST = '0.0.0.0'
     PORT = '5090'
@@ -41,11 +43,11 @@ class FlaskDevelopmentConfig(FlaskConfig):
 
     SECRET_KEY = "7d441f27d441f27567d441f2b6176a"
 
-    DB_HOST = '35.205.45.78'
-    DB_PORT = '5432'
-    DB_NAME = ''
-    DB_USERNAME = 'admin'
-    DB_PASS = 'admin'
+    DB_HOST = database_config.DB_HOST
+    DB_PORT = database_config.DB_PORT
+    DB_NAME = database_config.DB_NAME
+    DB_USERNAME = database_config.DB_USERNAME
+    DB_PASS = database_config.DB_PASS
 
     HOST = 'localhost'
     PORT = '5090'
