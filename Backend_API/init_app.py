@@ -1,6 +1,6 @@
 from flask import Flask, request, g, current_app, session
-from routes.routes_user_management import route_user_management
-import utils.carbuds_config as cfg
+from Backend_API.routes.routes_user_management import route_user_management
+import Backend_API.utils.carbuds_config as cfg
 
 
 def create_app(config):
@@ -23,4 +23,4 @@ def create_app(config):
 
 app = create_app('DEV')
 
-# app.run(port=5000)
+app.run(port=5000)
