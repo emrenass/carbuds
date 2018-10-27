@@ -29,3 +29,10 @@ def commit_query(query, conn):
         conn.commit()
         conn.close()
     return
+
+def commit_query_multiple(query, conn):
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        for q in query:
+            cur.execute(q)
+            conn.commit()
+    return
