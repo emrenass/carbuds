@@ -2,12 +2,9 @@ from flask import request, make_response, render_template, Blueprint, jsonify, r
 from flask import current_app as app
 from Backend_API.utils.decorators import login_required
 from Backend_API.database.database_interface import *
-import json
-import time
 import urllib.parse
 import requests
-import urllib3
-
+import polyline
 
 
 route_matchmaking = Blueprint('route_matchmaking', __name__)
@@ -88,6 +85,14 @@ def set_trip_hitchhiker():
         return jsonify(e)
 
     return jsonify(True)
+
+def check_polylines_intersections(driver_poly, hitchikker_poly):
+    driver_poly_decoded = polyline.decode(driver_poly)
+    hitchikker_poly_decodesd = polyline.decode(hitchikker_poly)
+    intersections = [value for value in driver_poly_decoded if value in hitchikker_poly_decodesd]
+    return intersections
+
+
 
 @route_matchmaking.route('/get_destination', methods=['POST'])
 def get_destination():

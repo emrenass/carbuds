@@ -83,6 +83,7 @@ def create_table():
                                     trip_end_point point,
                                     available_seat int,
                                     trip_start_time timestamp,
+                                    destination_polyline TEXT,
                                     CONSTRAINT Driver_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                                 )
                                 """
@@ -93,6 +94,7 @@ def create_table():
                                        trip_start_point point,
                                        trip_end_point point,
                                        trip_start_time timestamp,
+                                       destination_polyline TEXT,
                                        CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                                    )
                                    """
