@@ -73,7 +73,7 @@ def initial_driver_profile_setup():
     car_licence_plate = request.form['licence_plate']
     car_model = request.form['car_model']
     user_id = 1
-    musid_pref = '{%s}'
+    music_pref = '{%s}'
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence)
                 VALUES (%s, %s, '%s', '{"Pop", "Rock"}') """ % (1, car_model, gender_pref)
 

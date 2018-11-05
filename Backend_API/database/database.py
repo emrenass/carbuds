@@ -23,16 +23,14 @@ def upload_tables():
     conn.close()
 
 
-
 def create_enums():
     Gender_enum = """CREATE TYPE gender AS ENUM ('Male', 'Female', 'Both');"""
     Music_enum = """CREATE TYPE music AS ENUM ('Electro', 'Pop', 'Rock', 'Rap');"""
-    commands = [Gender_enum,Music_enum]
+    commands = [Gender_enum, Music_enum]
     return commands
 
+
 def create_table():
-
-
     User = """ CREATE TABLE "User" (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(50),
@@ -50,7 +48,7 @@ def create_table():
                         license_plate VARCHAR(9),
                         hitchhiker_gender_preference gender,
                         music_prefrence music[],
-
+                        passenger_seat int,
                         CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES "User" (id),
                         CONSTRAINT Driver_profile_model_id_fk FOREIGN KEY (car_model) REFERENCES Car_model (id)
                         );
@@ -80,6 +78,7 @@ def create_table():
 
     commands = [User, Car_brand, Car_model, Driver_profile, Hitchhiker_profile]
     return commands
+
 
 def drop_tables():
     User = """DROP TABLE IF EXISTS "User" CASCADE"""
