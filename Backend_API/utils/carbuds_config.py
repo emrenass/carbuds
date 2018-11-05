@@ -33,6 +33,8 @@ class FlaskProductionConfig(FlaskConfig):
     SSL_CERT = 'certificates/test.com.crt'
     SSL_KEY = 'certificates/test.com.key'
 
+    DIRECTIONS_API_KEY = 'AIzaSyBhWJgRmMZum5qBnjGA7HoaY_vpmyzMxe0'
+
     SECURE = True
     HTTPONLY = True
 
@@ -54,6 +56,8 @@ class FlaskDevelopmentConfig(FlaskConfig):
 
     SSL_CERT = 'certificates/test.com.crt'
     SSL_KEY = 'certificates/test.com.key'
+
+    DIRECTIONS_API_KEY = 'AIzaSyBhWJgRmMZum5qBnjGA7HoaY_vpmyzMxe0'
 
     SECURE = False
     HTTPONLY = False

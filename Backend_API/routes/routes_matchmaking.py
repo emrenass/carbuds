@@ -2,12 +2,30 @@ from flask import request, make_response, render_template, Blueprint, jsonify, r
 from flask import current_app as app
 from Backend_API.utils.decorators import login_required
 from Backend_API.database.database_interface import *
+from Backend_API.init_app import app
+import json
+import time
+import urllib
+import urllib3
+
+
 
 route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
 def set_trip_driver():
+    direction_api_key = app.config["DIRECTIONS_API_KEY"]
+    directions_base_url = 'http://maps.googleapis.com/maps/api/directions/json'
+    url = directions_base_url + '?' + urllib.urlencode({
+        'origin': "%s,%s" % ("38.453", "45.7654"),
+        'destination': "%s,%s" % ("38.543", "45.7642"),
+        'key': direction_api_key,
+    })
+
+    response = str(urllib3.urlopen(url).read())
+    result = json.loads(response.replace('\\n', ''))
+
     user_id = 1
     start_lat, start_lon = tuple(request.form['trip_start_point'].split(','))
     end_lat, end_lon = tuple(request.form['trip_start_point'].split(','))
@@ -53,3 +71,7 @@ def set_trip_hitchhiker():
         return jsonify(e)
 
     return jsonify(True)
+
+@route_matchmaking.route('/get_destination', methods=['POST'])
+def get_destination():
+    user_id = 1

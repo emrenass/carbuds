@@ -31,7 +31,7 @@ def create_enums():
 
 
 def create_table():
-    User = """ CREATE TABLE "User" (
+    Users = """ CREATE TABLE Users (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(50),
                 lastname VARCHAR(50),
@@ -49,7 +49,7 @@ def create_table():
                         hitchhiker_gender_preference gender,
                         music_prefrence music[],
                         passenger_seat int,
-                        CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES "User" (id),
+                        CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES Users (id),
                         CONSTRAINT Driver_profile_model_id_fk FOREIGN KEY (car_model) REFERENCES Car_model (id)
                         );
                     """
@@ -58,7 +58,7 @@ def create_table():
                             user_id int,
                             driver_gender_preference gender,
                             music_prefrence music[],
-                            CONSTRAINT Hitchhiker_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES "User" (id)
+                            CONSTRAINT Hitchhiker_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                             );
                         """
 
@@ -76,18 +76,41 @@ def create_table():
                 )
                 """
 
-    commands = [User, Car_brand, Car_model, Driver_profile, Hitchhiker_profile]
+    Driver_matchmaking_pool = """CREATE TABLE Driver_matchmaking_pool (
+                                    id SERIAL PRIMARY KEY,
+                                    user_id int,
+                                    trip_start_point point,
+                                    trip_end_point point,
+                                    available_seat int,
+                                    trip_start_time timestamp,
+                                    CONSTRAINT Driver_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
+                                )
+                                """
+
+    Hitchhiker_matchmaking_pool = """CREATE TABLE Hitchhiker_matchmaking_pool (
+                                       id SERIAL PRIMARY KEY,
+                                       user_id int,
+                                       trip_start_point point,
+                                       trip_end_point point,
+                                       trip_start_time timestamp,
+                                       CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
+                                   )
+                                   """
+
+    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile, Driver_matchmaking_pool, Hitchhiker_matchmaking_pool]
     return commands
 
 
 def drop_tables():
-    User = """DROP TABLE IF EXISTS "User" CASCADE"""
+    Users = """DROP TABLE IF EXISTS Users CASCADE"""
     Driver_profile = """DROP TABLE IF EXISTS Driver_profile CASCADE"""
     Hitchhiker_profile = """DROP TABLE IF EXISTS Hitchhiker_profile CASCADE"""
     Car_brand = """DROP TABLE IF EXISTS Car_brand CASCADE"""
     Car_model = """DROP TABLE IF EXISTS Car_model CASCADE"""
+    Driver_matchmaking_pool = """DROP TABLE IF EXISTS Driver_matchmaking_pool CASCADE"""
+    Hitchhiker_matchmaking_pool = """DROP TABLE IF EXISTS Hitchhiker_matchmaking_pool CASCADE"""
 
-    commands = [User, Car_brand, Car_model, Driver_profile, Hitchhiker_profile]
+    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile, Driver_matchmaking_pool, Hitchhiker_matchmaking_pool]
     return commands
 
 
