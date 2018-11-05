@@ -11,7 +11,7 @@ def login():
     username = request.form['username']
     password = request.form['password']
 
-    query = """SELECT * FROM "User" WHERE "username" = '%s' AND "password" = '%s'""" % (username, password)
+    query = """SELECT * FROM Users WHERE "username" = '%s' AND "password" = '%s'""" % (username, password)
 
     conn = db_connection()
     result = execute_query(query, conn)
@@ -36,7 +36,7 @@ def signup():
     password = request.form['password']
     email = request.form['email']
 
-    query = """INSERT INTO "User" (name, lastname, username, password, email)
+    query = """INSERT INTO Users (name, lastname, username, password, email)
                 VALUES ('%s', '%s', '%s', '%s', '%s')""" % (name, surname, username, password, email)
 
     conn = db_connection()
