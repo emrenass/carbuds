@@ -6,9 +6,6 @@ import json
 import time
 import urllib.parse
 import requests
-import urllib3
-
-
 
 route_matchmaking = Blueprint('route_matchmaking', __name__)
 
@@ -88,6 +85,7 @@ def set_trip_hitchhiker():
         return jsonify(e)
 
     return jsonify(True)
+
 
 @route_matchmaking.route('/get_destination', methods=['POST'])
 def get_destination():
