@@ -16,10 +16,10 @@ def upload_tables():
     views = create_views()
 
     conn = din.db_connection()
-    # din.commit_query_multiple(views, conn)
-    din.commit_query_multiple(drop_table, conn)
-    # din.commit_query_multiple(enums, conn)
-    din.commit_query_multiple(tables, conn)
+    din.commit_query_multiple(views, conn)
+    #din.commit_query_multiple(drop_table, conn)
+    #din.commit_query_multiple(enums, conn)
+    #din.commit_query_multiple(tables, conn)
 
     conn.close()
 
@@ -27,7 +27,8 @@ def upload_tables():
 def create_enums():
     Gender_enum = """CREATE TYPE gender AS ENUM ('Male', 'Female', 'Both');"""
     Music_enum = """CREATE TYPE music AS ENUM ('Electro', 'Pop', 'Rock', 'Rap');"""
-    commands = [Gender_enum, Music_enum]
+    Profile_enum = """CREATE TYPE profile AS ENUM ('Driver', 'Hitchhiker');"""
+    commands = [Gender_enum, Music_enum, Profile_enum]
     return commands
 
 
@@ -39,7 +40,8 @@ def create_table():
                 username VARCHAR(30) UNIQUE ,
                 password VARCHAR(50),
                 registration_date timestamp not null default CURRENT_TIMESTAMP,
-                email VARCHAR(100) UNIQUE 
+                email VARCHAR(100) UNIQUE,
+                current_profile profile
                 )
             """
 

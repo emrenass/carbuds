@@ -67,7 +67,7 @@ def initial_role_selection():
 @login_required
 def initial_driver_profile_setup():
     gender_pref = request.json['gender_preference']
-    musid_pref = request.json['music_preference']
+    music_pref = request.json['music_preference']
     passanger_seats = request.json['passanger_seats']
     # TODO: Check licence plate validity
     car_licence_plate = request.json['licence_plate']
@@ -76,6 +76,7 @@ def initial_driver_profile_setup():
     music_pref = '{%s}'
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence)
                 VALUES (%s, %s, '%s', '{"Pop", "Rock"}') """ % (1, car_model, gender_pref)
+    query_update = """UPDATE users SET current_profile='Driver'"""
 
     conn = db_connection()
 
@@ -91,6 +92,24 @@ def initial_driver_profile_setup():
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
 @login_required
 def initial_hitchhiker_profile_setup():
+    gender_pref = request.json['gender_preference']
+    music_pref = request.json['music_preference']
+    # TODO: Check licence plate validity
+    user_id = 1
+    music_pref = '{%s}'
+    query = """INSERT INTO "driver_profile" (user_id, hitchhiker_gender_preference, music_prefrence)
+                    VALUES (%s, '%s', '{"Pop", "Rock"}') """ % (1, gender_pref)
+    query_update = """UPDATE users SET current_profile='Hitchhiker'"""
+
+    conn = db_connection()
+
+    try:
+        commit_query(query, conn)
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+
+    return jsonify(True)
     pass
 
 
@@ -104,3 +123,27 @@ def update_driver_profile():
 @login_required
 def update_hitchhiker_profile():
     pass
+
+@route_user_management.route('/switch_profile', methods=['GET', 'POST'])
+@login_required
+def switch_profile():
+    user_id = 1
+    switch_to = ""
+    conn = db_connection()
+    query = """SELECT current_profile FROM users WHERE id = %s""" % (user_id)
+    try:
+        row = execute_query(query, conn)
+        if row[0]["current_profile"] == "Driver":
+            switch_to = "Hitchhiker"
+        else:
+            switch_to = "Driver"
+
+        conn = db_connection()
+        query = """UPDATE users SET current_profile='%s' WHERE id=%s""" % (switch_to, user_id)
+        commit_query(query, conn)
+
+        return jsonify(True)
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+
