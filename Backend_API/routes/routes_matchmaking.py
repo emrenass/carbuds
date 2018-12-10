@@ -32,7 +32,7 @@ def set_trip_driver():
 
     query = """INSERT INTO driver_matchmaking_pool 
                     (user_id, trip_start_point, trip_end_point, destination_polyline, available_seat, trip_start_time)
-                    VALUES ('%s', point('%f', '%f'), point('%f', '%f'), '%s', '%s', '%s')""" \
+                    VALUES ('%s', ST_SetSRID(ST_MakePoint(%f, %f), 4326), ST_SetSRID(ST_MakePoint(%f, %f), 4326), '%s', '%s', '%s')""" \
             % (user_id, float(start_lat), float(start_lon),
                float(end_lat), float(end_lon),
                route_polyline,
@@ -71,7 +71,7 @@ def set_trip_hitchhiker():
 
     query = """INSERT INTO hitchhiker_matchmaking_pool 
                         (user_id, trip_start_point, trip_end_point, trip_start_time, destination_polyline)
-                        VALUES ('%s', point('%f', '%f'), point('%f', '%f'), '%s', '%s')""" \
+                        VALUES ('%s', ST_GeomFromText('POINT(%f %f)', 4326), ST_GeomFromText('POINT(%f %f)', 4326), '%s', '%s')""" \
             % (user_id,
                float(start_lat), float(start_lon),
                float(end_lat), float(end_lon),
@@ -105,8 +105,8 @@ def get_trip_hitchhiker():
 
     query = """SELECT * 
                 FROM driver_matchmaking_pool
-                WHERE trip_start_point = point('%f', '%f') AND 
-                trip_end_point = point('%f', '%f') """\
+                WHERE trip_start_point = ST_GeomFromText('POINT(%f %f)', 4326) AND 
+                trip_end_point = ST_GeomFromText('POINT(%f %f)', 4326) """\
             % (float(start_lat), float(start_lon),
                float(end_lat), float(end_lon))
 

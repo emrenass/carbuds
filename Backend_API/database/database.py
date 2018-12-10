@@ -17,7 +17,7 @@ def upload_tables():
     conn = din.db_connection()
 
     din.commit_query_multiple(drop_table, conn)
-    #din.commit_query_multiple(enums, conn)
+    # din.commit_query_multiple(enums, conn)
     din.commit_query_multiple(tables, conn)
 
     conn.close()
@@ -79,8 +79,6 @@ def create_table():
     Driver_matchmaking_pool = """CREATE TABLE Driver_matchmaking_pool (
                                     id SERIAL PRIMARY KEY,
                                     user_id int,
-                                    trip_start_point point,
-                                    trip_end_point point,
                                     available_seat int,
                                     trip_start_time timestamp,
                                     destination_polyline TEXT,
@@ -91,15 +89,25 @@ def create_table():
     Hitchhiker_matchmaking_pool = """CREATE TABLE Hitchhiker_matchmaking_pool (
                                        id SERIAL PRIMARY KEY,
                                        user_id int,
-                                       trip_start_point point,
-                                       trip_end_point point,
                                        trip_start_time timestamp,
                                        destination_polyline TEXT,
                                        CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                                    )
                                    """
 
-    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile, Driver_matchmaking_pool, Hitchhiker_matchmaking_pool]
+    Hitchhiker_matchmaking_pool_start = """SELECT AddGeometryColumn ('hitchhiker_matchmaking_pool','trip_start_point',4326,'POINT',2);
+                                       """
+    Hitchhiker_matchmaking_pool_end = """SELECT AddGeometryColumn ('hitchhiker_matchmaking_pool','trip_end_point',4326,'POINT',2);
+                                           """
+    Driver_matchmaking_pool_start = """SELECT AddGeometryColumn ('driver_matchmaking_pool','trip_start_point',4326,'POINT',2);
+                                           """
+    Driver_matchmaking_pool_end = """SELECT AddGeometryColumn ('driver_matchmaking_pool','trip_end_point',4326,'POINT',2);
+                                               """
+
+    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile,
+                Driver_matchmaking_pool, Hitchhiker_matchmaking_pool,
+                Hitchhiker_matchmaking_pool_start, Hitchhiker_matchmaking_pool_end,
+                Driver_matchmaking_pool_start, Driver_matchmaking_pool_end]
     return commands
 
 
@@ -112,7 +120,8 @@ def drop_tables():
     Driver_matchmaking_pool = """DROP TABLE IF EXISTS Driver_matchmaking_pool CASCADE"""
     Hitchhiker_matchmaking_pool = """DROP TABLE IF EXISTS Hitchhiker_matchmaking_pool CASCADE"""
 
-    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile, Driver_matchmaking_pool, Hitchhiker_matchmaking_pool]
+    commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile, Driver_matchmaking_pool,
+                Hitchhiker_matchmaking_pool]
     return commands
 
 
