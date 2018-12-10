@@ -13,9 +13,10 @@ def upload_tables():
     enums = create_enums()
     drop_table = drop_tables()
     tables = create_table()
+    views = create_views()
 
     conn = din.db_connection()
-
+    # din.commit_query_multiple(views, conn)
     din.commit_query_multiple(drop_table, conn)
     # din.commit_query_multiple(enums, conn)
     din.commit_query_multiple(tables, conn)
@@ -124,6 +125,30 @@ def drop_tables():
                 Hitchhiker_matchmaking_pool]
     return commands
 
+
+def create_views():
+    hitchhiker_matchmaking = """CREATE VIEW  hitchhiker_matchmaking AS
+    SELECT u.id, hm.trip_start_time, hm.destination_polyline, hm.trip_start_point, hm.trip_end_point, hp.driver_gender_preference, hp.music_prefrence
+    FROM hitchhiker_matchmaking_pool hm
+        inner join
+    users u
+        on u.id = hm.user_id
+        inner join
+    hitchhiker_profile hp
+        on hm.user_id = hp.user_id;"""
+
+    driver_matchmaking = """CREATE VIEW  driver_matchmaking AS
+    SELECT u.id, dm.trip_start_time, dm.destination_polyline, dm.trip_start_point, dm.trip_end_point, dp.hitchhiker_gender_preference, dp.music_prefrence
+    FROM driver_matchmaking_pool dm
+            inner join
+        users u
+            on u.id = dm.user_id
+            inner join
+        driver_profile dp
+        on dm.user_id = dp.user_id;"""
+
+    commands = [hitchhiker_matchmaking, driver_matchmaking]
+    return commands
 
 if __name__ == '__main__':
     upload_tables()
