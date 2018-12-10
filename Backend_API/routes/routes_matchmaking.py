@@ -13,10 +13,10 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
 def set_trip_driver():
     user_id = 1
-    start_lat, start_lon = tuple(request.form['trip_start_point'].split(','))
-    end_lat, end_lon = tuple(request.form['trip_end_point'].split(','))
-    trip_start_time = request.form['trip_start_time']
-    available_seat = request.form['available_seat']
+    start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
+    end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
+    trip_start_time = request.json['trip_start_time']
+    available_seat = request.json['available_seat']
     direction_api_key = app.config["DIRECTIONS_API_KEY"]
     directions_base_url = 'https://maps.googleapis.com/maps/api/directions/json'
     url = directions_base_url + '?' + urllib.parse.urlencode({
@@ -52,9 +52,9 @@ def set_trip_driver():
 @route_matchmaking.route('/set_trip_hitchhiker', methods=['POST'])
 def set_trip_hitchhiker():
     user_id = 1
-    start_lat, start_lon = tuple(request.form['trip_start_point'].split(','))
-    end_lat, end_lon = tuple(request.form['trip_end_point'].split(','))
-    trip_start_time = request.form['trip_start_time']
+    start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
+    end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
+    trip_start_time = request.json['trip_start_time']
 
     direction_api_key = app.config["DIRECTIONS_API_KEY"]
     directions_base_url = 'https://maps.googleapis.com/maps/api/directions/json'
@@ -98,8 +98,8 @@ def check_polylines_intersections(driver_poly, hitchikker_poly):
 @route_matchmaking.route('/get_trip_hitchhiker', methods=['POST'])
 def get_trip_hitchhiker():
     user_id = 1
-    start_lat, start_lon = tuple(request.form['trip_start_point'].split(','))
-    end_lat, end_lon = tuple(request.form['trip_start_point'].split(','))
+    start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
+    end_lat, end_lon = tuple(request.json['trip_start_point'].split(','))
     trip_start_time = request.form['trip_start_time']
     # route_polyline = request.form['route_polyline']
 

@@ -8,8 +8,8 @@ route_user_management = Blueprint('route_user_management', __name__)
 
 @route_user_management.route('/login', methods=['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
+    username = request.json['username']
+    password = request.json['password']
 
     query = """SELECT * FROM Users WHERE "username" = '%s' AND "password" = '%s'""" % (username, password)
 
@@ -30,11 +30,11 @@ def logout():
 
 @route_user_management.route('/signup', methods=['GET', 'POST'])
 def signup():
-    name = request.form['name']
-    surname = request.form['surname']
-    username = request.form['username']
-    password = request.form['password']
-    email = request.form['email']
+    name = request.json['name']
+    surname = request.json['surname']
+    username = request.json['username']
+    password = request.json['password']
+    email = request.json['email']
 
     query = """INSERT INTO Users (name, lastname, username, password, email)
                 VALUES ('%s', '%s', '%s', '%s', '%s')""" % (name, surname, username, password, email)
@@ -66,12 +66,12 @@ def initial_role_selection():
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
 @login_required
 def initial_driver_profile_setup():
-    gender_pref = request.form['gender_preference']
-    musid_pref = request.form['music_preference']
-    passanger_seats = request.form['passanger_seats']
+    gender_pref = request.json['gender_preference']
+    musid_pref = request.json['music_preference']
+    passanger_seats = request.json['passanger_seats']
     # TODO: Check licence plate validity
-    car_licence_plate = request.form['licence_plate']
-    car_model = request.form['car_model']
+    car_licence_plate = request.json['licence_plate']
+    car_model = request.json['car_model']
     user_id = 1
     music_pref = '{%s}'
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence)
