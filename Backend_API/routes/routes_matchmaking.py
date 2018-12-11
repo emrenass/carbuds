@@ -12,7 +12,7 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
 def set_trip_driver():
-    user_id = 1
+    user_id = request.json['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
     end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
     trip_start_time = request.json['trip_start_time']
@@ -51,7 +51,7 @@ def set_trip_driver():
 
 @route_matchmaking.route('/set_trip_hitchhiker', methods=['POST'])
 def set_trip_hitchhiker():
-    user_id = 1
+    user_id = request.json['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
     end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
     trip_start_time = request.json['trip_start_time']
@@ -95,23 +95,86 @@ def check_polylines_intersections(driver_poly, hitchikker_poly):
 
 
 
-@route_matchmaking.route('/get_trip_hitchhiker', methods=['POST'])
-def get_trip_hitchhiker():
-    user_id = 1
-    start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
-    end_lat, end_lon = tuple(request.json['trip_start_point'].split(','))
-    trip_start_time = request.form['trip_start_time']
-    # route_polyline = request.form['route_polyline']
+@route_matchmaking.route('/get_driver_candidate', methods=['POST'])
+def get_driver_candidate():
+    user_id = request.json['user_id']
 
-    query = """SELECT * 
-                FROM driver_matchmaking_pool
-                WHERE trip_start_point = ST_GeomFromText('POINT(%f %f)', 4326) AND 
-                trip_end_point = ST_GeomFromText('POINT(%f %f)', 4326) """\
-            % (float(start_lat), float(start_lon),
-               float(end_lat), float(end_lon))
+    query = """SELECT destination_polyline, trip_start_time,
+                ST_X(trip_start_point) lat_start, ST_Y(trip_start_point) lon_start,
+                hitchhiker_profile.music_prefrence, hitchhiker_profile.hitchhiker_gender_preference
+                FROM hitchhiker_matchmaking_pool
+                INNER JOIN hitchhiker_profile
+                ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
+                WHERE hitchhiker_matchmaking_pool.user_id = %s """ \
+            % (user_id)
 
     conn = db_connection()
     result = execute_query(query, conn)
+
+    start_lat = result[0]['lat_start']
+    start_lon = result[0]['lon_start']
+    music_pref = result[0]['music_preference']
+    gender_pref = result[0]['hitchhiker_gender_preference']
+    trip_start_time = result[0]['trip_start_time']
+    route_polyline = result[0]['destination_polyline']
+
+    query = """SELECT * 
+                FROM driver_matchmaking_pool
+                INNER JOIN driver_profile
+                ON driver_matchmaking_pool.user_id = driver_profile.user_id
+                WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                        driver_profile.music_prefrence = '%s' AND 
+                        driver_profile.hitchhiker_gender_preference = '%s' """\
+            % (float(start_lat), float(start_lon),
+               music_pref, gender_pref)
+
+    conn = db_connection()
+    result = execute_query(query, conn)
+
+    if result:
+        return jsonify(result)
+    else:
+        return jsonify(False)
+
+
+@route_matchmaking.route('/get_hitchhiker_candidate', methods=['POST'])
+def get_hitchhiker_candidate():
+    user_id = request.json['user_id']
+
+    query = """SELECT destination_polyline, trip_start_time,
+                    ST_X(trip_start_point) lat_start, ST_Y(trip_start_point) lon_start,
+                    driver_profile.music_prefrence, driver_profile.hitchhiker_gender_preference
+                    FROM driver_matchmaking_pool
+                    INNER JOIN driver_profile
+                    ON driver_matchmaking_pool.user_id = driver_profile.user_id
+                    WHERE driver_matchmaking_pool.user_id = %s """ \
+            % (user_id)
+
+    conn = db_connection()
+    result = execute_query(query, conn)
+
+    if result:
+        start_lat = result[0]['lat_start']
+        start_lon = result[0]['lon_start']
+        music_pref = result[0]['music_prefrence']
+        gender_pref = result[0]['hitchhiker_gender_preference']
+        trip_start_time = result[0]['trip_start_time']
+        route_polyline = result[0]['destination_polyline']
+
+        query = """SELECT * 
+                        FROM hitchhiker_matchmaking_pool
+                        INNER JOIN hitchhiker_profile
+                        ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
+                        WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                                hitchhiker_profile.music_prefrence = '%s' AND 
+                                hitchhiker_profile.driver_gender_preference = '%s' """ \
+                % (float(start_lat), float(start_lon),
+                   music_pref, gender_pref)
+
+        conn = db_connection()
+        result = execute_query(query, conn)
+    else:
+        return jsonify(False)
 
     if result:
         return jsonify(result)
