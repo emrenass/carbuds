@@ -71,11 +71,22 @@ def initial_driver_profile_setup():
     passanger_seats = request.json['passanger_seats']
     # TODO: Check licence plate validity
     car_licence_plate = request.json['licence_plate']
-    car_model = request.json['car_model']
-    user_id = 1
-    music_pref = '{%s}'
-    query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence)
-                VALUES (%s, %s, '%s', '{"Pop", "Rock"}') """ % (1, car_model, gender_pref)
+    brand = request.json['car_brand']
+    model = request.json['car_model']
+    user_id = request.json['user_id']
+
+    query_brand = """SELECT cm.id FROM car_brand cb INNER JOIN car_model cm ON cb.id = cm.brand_id WHERE cm.model='%s' AND cb.brand = '%s'""" % (
+        model, brand)
+
+    conn = db_connection()
+    try:
+        result = execute_query(query_brand, conn)
+        model_id = result[0]["id"]
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+    query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence, passenger_seat)
+                VALUES (%s, %s, '%s', '%s', %s) """ % (user_id, model_id, gender_pref, music_pref, passanger_seats)
     query_update = """UPDATE users SET current_profile='Driver'"""
 
     conn = db_connection()
@@ -92,13 +103,12 @@ def initial_driver_profile_setup():
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
 @login_required
 def initial_hitchhiker_profile_setup():
+    user_id = request.json['user_id']
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     # TODO: Check licence plate validity
-    user_id = 1
-    music_pref = '{%s}'
     query = """INSERT INTO "driver_profile" (user_id, hitchhiker_gender_preference, music_prefrence)
-                    VALUES (%s, '%s', '{"Pop", "Rock"}') """ % (1, gender_pref)
+                    VALUES (%s, '%s', '%s') """ % (user_id, gender_pref, music_pref)
     query_update = """UPDATE users SET current_profile='Hitchhiker'"""
 
     conn = db_connection()
@@ -113,16 +123,57 @@ def initial_hitchhiker_profile_setup():
     pass
 
 
-@route_user_management.route('/update_driver_profile', methods=['GET', 'POST'])
+@route_user_management.route('/update_driver_profile', methods=['POST'])
 @login_required
 def update_driver_profile():
-    pass
+    json = request.json
+    model = json["car_model"]
+    brand = json["car_brand"]
+
+    query_brand = """SELECT cm.id FROM car_brand cb INNER JOIN car_model cm ON cb.id = cm.brand_id WHERE cm.model='%s' AND cb.brand = '%s'""" % (
+    model, brand)
+
+    conn = db_connection()
+    try:
+        result = execute_query(query_brand, conn)
+        model_id = result[0]["id"]
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+
+    query = """UPDATE driver_profile SET car_model = %s, license_plate = '%s', hitchhiker_gender_preference = '%s', 
+                music_prefrence = '%s', passenger_seat = %s WHERE user_id = %s""" % (
+                                                model_id, json["license_plate"], json["hitchhiker_gender_preference"],
+                                                json["music_prefrence"], json["passenger_seat"], json["user_id"])
+
+    conn = db_connection()
+    try:
+        commit_query(query, conn)
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+
+    return jsonify(True)
 
 
 @route_user_management.route('/update_hitchhiker_profile', methods=['GET', 'POST'])
-@login_required
 def update_hitchhiker_profile():
+    json = request.json
+
+    query = """UPDATE hitchhiker_profile SET driver_gender_preference = '%s', 
+                    music_prefrence = '%s'WHERE user_id = %s""" % (
+        json["driver_gender_preference"], json["music_prefrence"], json["user_id"])
+
+    conn = db_connection()
+    try:
+        commit_query(query, conn)
+    except Exception as e:
+        print(e)
+        return jsonify(e)
+
+    return jsonify(True)
     pass
+
 
 @route_user_management.route('/switch_profile', methods=['GET', 'POST'])
 @login_required
