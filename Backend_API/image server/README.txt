@@ -7,7 +7,7 @@ request:
 {
 	"user_id" : int,
 	"target_id": int
-  "session_token" : string
+  	"session_token" : string
 }
 
 
@@ -17,6 +17,6 @@ request:
 request:
 {
   	"user_id" : int,
-    "bitmap" : base64 encoded hex string,
-    "session_token" : string
+    	"bitmap" : base64 encoded hex string,
+   	 "session_token" : string
 }
