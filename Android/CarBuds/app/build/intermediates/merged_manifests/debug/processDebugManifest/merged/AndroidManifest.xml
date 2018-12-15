@@ -12,6 +12,20 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Include required permissions for Google Maps API to run. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -21,6 +35,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/AppTheme" >
         <activity android:name="com.ali.cs491.carbuds.MainActivity" >
             <intent-filter>
@@ -37,16 +52,49 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ali.cs491.carbuds.MainActivity" />
         </activity>
+        <activity android:name="com.ali.cs491.carbuds.TypeSelectionActivity" />
         <activity
-            android:name="com.ali.cs491.carbuds.SignupActivity"
-            android:label="@string/title_activity_signup"
+            android:name="com.ali.cs491.carbuds.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCb4kimmN24wdldQBjMDMZWbW2m1NlHkG4" />
+
+        <activity
+            android:name="com.ali.cs491.carbuds.StartSelectionActivity"
+            android:label="@string/title_activity_selection" />
+        <activity android:name="com.ali.cs491.carbuds.MatchmakingActivity" />
+        <activity
+            android:name="com.ali.cs491.carbuds.SignUpActivity"
+            android:label="@string/title_activity_sign_up"
             android:parentActivityName="com.ali.cs491.carbuds.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ali.cs491.carbuds.MainActivity" />
         </activity>
-        <activity android:name="com.ali.cs491.carbuds.TypeSelectionActivity" >
+        <activity
+            android:name="com.ali.cs491.carbuds.TargetSelectionActivity"
+            android:label="@string/title_activity_targer_selection" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ali.cs491.carbuds.StartSelectionActivity" />
         </activity>
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
