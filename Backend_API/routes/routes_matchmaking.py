@@ -31,6 +31,8 @@ def set_trip_driver():
                                          units='metric',
                                          departure_time=datetime.now())
 
+    if not directions_result:
+        return jsonify("No Available Route")
     route_polyline = directions_result[0]['overview_polyline']['points']
 
     query = """INSERT INTO driver_matchmaking_pool 
@@ -47,7 +49,7 @@ def set_trip_driver():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return "Database Error"
 
     find_and_write_hitchhiker_candidates(user_id)
 
@@ -71,6 +73,9 @@ def set_trip_hitchhiker():
                                          units='metric',
                                          departure_time=datetime.now())
 
+    if not directions_result:
+        return jsonify("No Available Route")
+
     route_polyline = directions_result[0]['overview_polyline']['points']
 
     query = """INSERT INTO hitchhiker_matchmaking_pool 
@@ -87,7 +92,7 @@ def set_trip_hitchhiker():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return e
+        return "Database Error"
     find_and_write_driver_candidates(user_id)
     return jsonify(True)
 
@@ -193,7 +198,7 @@ def dislike_match():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return jsonify("Database Error")
     return jsonify(True)
 
 
@@ -221,7 +226,7 @@ def like_match():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return jsonify("Database Error")
     return jsonify(True)
 
 
