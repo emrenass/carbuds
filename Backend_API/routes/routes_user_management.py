@@ -74,6 +74,7 @@ def initial_role_selection():
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
 @login_required
 def initial_driver_profile_setup():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     passanger_seats = request.json['passanger_seats']
@@ -81,7 +82,7 @@ def initial_driver_profile_setup():
     car_licence_plate = request.json['licence_plate']
     brand = request.json['car_brand']
     model = request.json['car_model']
-    user_id = request.json['user_id']
+    user_id = token['user_id']
 
     query_brand = """SELECT cm.id 
                       FROM car_brand cb 
@@ -118,7 +119,8 @@ def initial_driver_profile_setup():
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
 @login_required
 def initial_hitchhiker_profile_setup():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     # TODO: Check licence plate validity
@@ -142,6 +144,8 @@ def initial_hitchhiker_profile_setup():
 @route_user_management.route('/update_driver_profile', methods=['POST'])
 @login_required
 def update_driver_profile():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     json = request.json
     model = json["car_model"]
     brand = json["car_brand"]
@@ -160,7 +164,7 @@ def update_driver_profile():
     query = """UPDATE driver_profile SET car_model = %s, license_plate = '%s', hitchhiker_gender_preference = '%s', 
                 music_preference = '%s', passenger_seat = %s WHERE user_id = %s""" % (
         model_id, json["license_plate"], json["hitchhiker_gender_preference"],
-        json["music_preference"], json["passenger_seat"], json["user_id"])
+        json["music_preference"], json["passenger_seat"], user_id)
 
     conn = db_connection()
     try:
@@ -176,10 +180,11 @@ def update_driver_profile():
 @login_required
 def update_hitchhiker_profile():
     json = request.json
-
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     query = """UPDATE hitchhiker_profile SET driver_gender_preference = '%s', 
                     music_preference = '%s'WHERE user_id = %s""" % (
-        json["driver_gender_preference"], json["music_preference"], json["user_id"])
+        json["driver_gender_preference"], json["music_preference"], user_id)
 
     conn = db_connection()
     try:
@@ -195,7 +200,8 @@ def update_hitchhiker_profile():
 @route_user_management.route('/switch_profile', methods=['GET', 'POST'])
 @login_required
 def switch_profile():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     switch_to = ""
     conn = db_connection()
     query = """SELECT current_profile FROM users WHERE id = %s""" % (user_id)
