@@ -1,4 +1,4 @@
-to be run at a different server
+to be ran at a different server
 
 
 /get_pfp : POST
