@@ -13,6 +13,7 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
+@login_required
 def set_trip_driver():
     user_id = request.json['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
@@ -52,6 +53,7 @@ def set_trip_driver():
 
 
 @route_matchmaking.route('/set_trip_hitchhiker', methods=['POST'])
+@login_required
 def set_trip_hitchhiker():
     user_id = request.json['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
@@ -99,6 +101,7 @@ def polyline_encoder(coord_list):
 
 
 @route_matchmaking.route('/get_driver_candidate', methods=['POST'])
+@login_required
 def get_driver_candidate():
     user_id = request.json['user_id']
 
@@ -117,6 +120,7 @@ def get_driver_candidate():
 
 
 @route_matchmaking.route('/get_hitchhiker_candidate', methods=['POST'])
+@login_required
 def get_hitchhiker_candidate():
     user_id = request.json['user_id']
 
@@ -135,6 +139,7 @@ def get_hitchhiker_candidate():
 
 
 @route_matchmaking.route('/cancel_driver_trip', methods=['POST'])
+@login_required
 def cancel_driver_trip():
     trip_id = request.json['trip_id']
 
@@ -151,6 +156,7 @@ def cancel_driver_trip():
 
 
 @route_matchmaking.route('/cancel_hitchhiker_trip', methods=['POST'])
+@login_required
 def cancel_hitchhiker_trip():
     trip_id = request.json['trip_id']
 
@@ -168,6 +174,7 @@ def cancel_hitchhiker_trip():
 
 
 @route_matchmaking.route('/dislike_match', methods=['POST'])
+@login_required
 def dislike_match():
     possible_match_id = request.json['possible_match_id']
 
@@ -186,6 +193,7 @@ def dislike_match():
 
 
 @route_matchmaking.route('/like_match', methods=['POST'])
+@login_required
 def like_match():
     user_id = request.json['user_id']
     possible_match_id = request.json['possible_match_id']
@@ -212,11 +220,13 @@ def like_match():
 
 
 @route_matchmaking.route('/remove_match', methods=['POST'])
+@login_required
 def remove_match():
     pass
 
 
 @route_matchmaking.route('/finish_match', methods=['POST'])
+@login_required
 def finish_match():
     pass
 
