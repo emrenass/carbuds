@@ -1,36 +1,15 @@
-from _datetime import datetime
-from time import sleep
-
-import polyline
-import pandas as pd
 from Backend_API.database.database_interface import *
 from Backend_API.utils.carbuds_config import *
 from Backend_API.rabbitmq.rabbitmq_interface import *
+from Notification_Server.config import *
 
 import googlemaps
+import polyline
+import pandas as pd
+from _datetime import datetime
+from time import sleep
+from pyfcm import FCMNotification
 
-
-# Send to single device.
-# from pyfcm import FCMNotification
-#
-# push_service = FCMNotification(
-#     api_key="AAAAXEaSbDo:APA91bEds96IEbn9D-gdwNVqoXFAbJakdw3m-GpeKWekW4Wgq3l9kmQCnUZTtfOOMtn3tusqWPySHIzwFBv3BzDoLTJV8xPGwZ-dRcdh00Gm1nw3utlG7pakwycuobEIOWynvILdMm-h")
-#
-# # Your api-key can be gotten from:  https://console.firebase.google.com/project/<project-name>/settings/cloudmessaging
-#
-# registration_id = "cYAYeJQosbo:APA91bEyFvhJml534sMe6eIPAZ2mVd6DR9Dw72GHBvzr9qWJkZbdcTwfYIEB34fvvqmOnpBt3Ud-8Be3oN-y_q14N39nBWfmhov984S1noIYpnqvLdeeQYVrkCOALLoCFFtMnuwAJ3hp"
-# message_title = "CarBuds"
-# message_body = "Hey You Have a New CarBud"
-# # result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title,
-# #                                            message_body=message_body, data_message={"match_id": 22},)
-#
-# data_message = {
-#     "Nick": "dildo",
-#     "body": "great match!",
-#     "Room": "PortugalVSDenmark"
-# }
-# result = push_service.notify_single_device(registration_id=registration_id, message_body=message_body,
-#                                            data_message=data_message)
 
 def check_polylines_intersections(driver_poly, hitchikker_poly):
     driver_poly_decoded = polyline.decode(driver_poly)
@@ -64,7 +43,7 @@ def match_possible_trip():
 
         if not match_list:
             print("No Matches Available Freezing 10 Seconds")
-            sleep(1000)  # Sleep 10 seconds when no matches available
+            sleep(10)  # Sleep 10 seconds when no matches available
             continue
 
         possible_matches_to_remove = []
@@ -99,7 +78,14 @@ def match_possible_trip():
                 commit_query(query, conn)
             except Exception as e:
                 print(e)
-                return "Database Error"
+                print("Database Error")
+                continue
+            try:
+                push_match_notification(hitchhiker['device_reg_id'])
+                push_match_notification(driver['device_reg_id'])
+            except Exception as e:
+                print(e.with_traceback)
+                continue
 
         remove_from_possible_match(possible_matches_to_remove)
         print('Possible Matches Handled')
@@ -127,7 +113,7 @@ def prepare_user_information(hitchhiker_id, driver_id):
         conn = db_connection()
         hitchhiker_info = execute_query(query, conn)
     except Exception as e:
-        return e
+        raise e
 
     query = """select "name", lastname, device_reg_id
                 from users
@@ -136,7 +122,7 @@ def prepare_user_information(hitchhiker_id, driver_id):
         conn = db_connection()
         driver_info = execute_query(query, conn)
     except Exception as e:
-        return e
+        raise e
 
     return hitchhiker_info[0], driver_info[0]
 
@@ -153,8 +139,22 @@ def init_message_room_for_match(possible_match_id):
     return exchange_name, hitchhiker_queue, driver_queue
 
 
-def push_match_notification():
-    pass
+def push_match_notification(device_reg_id=None):
+
+    push_service = FCMNotification(api_key=FCM_SERVER_KEY)
+
+    if not device_reg_id:
+        device_reg_id = "cYAYeJQosbo:APA91bEyFvhJml534sMe6eIPAZ2mVd6DR9Dw72GHBvzr9qWJkZbdcTwfYIEB34fvvqmOnpBt3Ud-8Be3oN-y_q14N39nBWfmhov984S1noIYpnqvLdeeQYVrkCOALLoCFFtMnuwAJ3hp"
+    message_title = "CarBuds"
+    message_body = "Hey! You Have a New CarBud!"
+
+    try:
+        result = push_service.notify_single_device(registration_id=device_reg_id,
+                                                   message_title=message_title,
+                                                   message_body=message_body)
+    except Exception as e:
+        raise e
+    print("Notification Sent")
 
 
 match_possible_trip()

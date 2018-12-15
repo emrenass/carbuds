@@ -76,9 +76,9 @@ def initial_role_selection():
 def initial_driver_profile_setup():
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
-    passanger_seats = request.json['passanger_seats']
+    passenger_seats = request.json['passenger_seats']
     # TODO: Check licence plate validity
-    car_licence_plate = request.json['licence_plate']
+    car_license_plate = request.json['license_plate']
     brand = request.json['car_brand']
     model = request.json['car_model']
     user_id = request.json['user_id']
@@ -98,7 +98,7 @@ def initial_driver_profile_setup():
         return jsonify(e)
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_preference, passenger_seat, license_plate)
                 VALUES (%s, %s, '%s', '%s', %s, '%s') """ % (
-        user_id, model_id, gender_pref, music_pref, passanger_seats, car_licence_plate)
+        user_id, model_id, gender_pref, music_pref, passenger_seats, car_license_plate)
     query_update = """UPDATE users 
                         SET current_profile='Driver' 
                         WHERE id=%s""" % user_id
@@ -155,12 +155,12 @@ def update_driver_profile():
         model_id = result[0]["id"]
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return jsonify(str(e))
 
     query = """UPDATE driver_profile SET car_model = %s, license_plate = '%s', hitchhiker_gender_preference = '%s', 
                 music_preference = '%s', passenger_seat = %s WHERE user_id = %s""" % (
-        model_id, json["license_plate"], json["hitchhiker_gender_preference"],
-        json["music_preference"], json["passenger_seat"], json["user_id"])
+        model_id, json["license_plate"], json["gender_preference"],
+        json["music_preference"], json["passenger_seats"], json["user_id"])
 
     conn = db_connection()
     try:
@@ -179,7 +179,7 @@ def update_hitchhiker_profile():
 
     query = """UPDATE hitchhiker_profile SET driver_gender_preference = '%s', 
                     music_preference = '%s'WHERE user_id = %s""" % (
-        json["driver_gender_preference"], json["music_preference"], json["user_id"])
+        json["gender_preference"], json["music_preference"], json["user_id"])
 
     conn = db_connection()
     try:
@@ -189,7 +189,7 @@ def update_hitchhiker_profile():
         return jsonify(e)
 
     return jsonify(True)
-    pass
+
 
 
 @route_user_management.route('/switch_profile', methods=['GET', 'POST'])
