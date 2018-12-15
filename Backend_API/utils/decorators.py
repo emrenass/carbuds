@@ -7,15 +7,18 @@ import jwt
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.cookies.get('token')
+        token = request.json['token']
 
         if not token:
             return make_response(redirect('/login'))
         try:
-            jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            result = jwt.decode(token, app.config['SECRET_KEY'], algorithm=['HS256'])
         except:
             return make_response(redirect('/login'))
 
-        return f(*args, **kwargs)
+        if result["user_id"] == request.json["user_id"]:
+            return f(*args, **kwargs)
+        else:
+            return make_response(redirect('/login'))
 
     return decorated

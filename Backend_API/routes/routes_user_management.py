@@ -2,6 +2,7 @@ from flask import request, make_response, render_template, Blueprint, jsonify, r
 from flask import current_app as app
 from Backend_API.utils.decorators import login_required
 from Backend_API.database.database_interface import *
+import jwt
 
 route_user_management = Blueprint('route_user_management', __name__)
 
@@ -17,7 +18,11 @@ def login():
     result = execute_query(query, conn)
 
     if result:
-        return jsonify(True)
+        message = {
+                  "username": username,
+                  "user_id": result[0]["id"]
+            }
+        return jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256')
     else:
         return jsonify(False)
 
@@ -67,7 +72,7 @@ def initial_role_selection():
 
 
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
-# @login_required
+@login_required
 def initial_driver_profile_setup():
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
@@ -111,7 +116,7 @@ def initial_driver_profile_setup():
 
 
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def initial_hitchhiker_profile_setup():
     user_id = request.json['user_id']
     gender_pref = request.json['gender_preference']
@@ -168,6 +173,7 @@ def update_driver_profile():
 
 
 @route_user_management.route('/update_hitchhiker_profile', methods=['GET', 'POST'])
+@login_required
 def update_hitchhiker_profile():
     json = request.json
 
