@@ -18,5 +18,5 @@ request:
 {
   	"user_id" : int,
     	"bitmap" : base64 encoded hex string,
-   	 "session_token" : string
+   	"session_token" : string
 }
