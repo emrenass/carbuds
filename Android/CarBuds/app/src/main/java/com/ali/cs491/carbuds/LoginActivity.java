@@ -305,8 +305,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return false;
                 } else {
                     token = msg;
-                // Simulate network access.
-                Thread.sleep(2000);
+                    // Simulate network access.
+                    Thread.sleep(2000);
+                }
             } catch (InterruptedException e) {
                 return false;
             }
