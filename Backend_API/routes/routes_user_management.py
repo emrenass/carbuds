@@ -35,9 +35,12 @@ def signup():
     username = request.json['username']
     password = request.json['password']
     email = request.json['email']
+    gender = request.json['gender']
+    device_reg_id = request.json['device_reg_id']
 
-    query = """INSERT INTO Users (name, lastname, username, password, email)
-                VALUES ('%s', '%s', '%s', '%s', '%s')""" % (name, surname, username, password, email)
+    query = """INSERT INTO Users (name, lastname, username, password, email, gender, device_reg_id)
+                VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')""" \
+                % (name, surname, username, password, email, gender, device_reg_id)
 
     conn = db_connection()
 
@@ -64,7 +67,7 @@ def initial_role_selection():
 
 
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
-@login_required
+# @login_required
 def initial_driver_profile_setup():
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
@@ -75,7 +78,10 @@ def initial_driver_profile_setup():
     model = request.json['car_model']
     user_id = request.json['user_id']
 
-    query_brand = """SELECT cm.id FROM car_brand cb INNER JOIN car_model cm ON cb.id = cm.brand_id WHERE cm.model='%s' AND cb.brand = '%s'""" % (
+    query_brand = """SELECT cm.id 
+                      FROM car_brand cb 
+                      INNER JOIN car_model cm ON cb.id = cm.brand_id 
+                      WHERE cm.model='%s' AND cb.brand = '%s'""" % (
         model, brand)
 
     conn = db_connection()
@@ -85,14 +91,18 @@ def initial_driver_profile_setup():
     except Exception as e:
         print(e)
         return jsonify(e)
-    query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_prefrence, passenger_seat)
-                VALUES (%s, %s, '%s', '%s', %s) """ % (user_id, model_id, gender_pref, music_pref, passanger_seats)
-    query_update = """UPDATE users SET current_profile='Driver'"""
+    query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_preference, passenger_seat, license_plate)
+                VALUES (%s, %s, '%s', '%s', %s, '%s') """ % (
+        user_id, model_id, gender_pref, music_pref, passanger_seats, car_licence_plate)
+    query_update = """UPDATE users 
+                        SET current_profile='Driver' 
+                        WHERE id=%s""" % user_id
 
     conn = db_connection()
 
     try:
-        commit_query(query, conn)
+        commit_query_multiple([query, query_update], conn)
+        # commit_query(query, conn)
     except Exception as e:
         print(e)
         return jsonify(e)
@@ -101,20 +111,21 @@ def initial_driver_profile_setup():
 
 
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def initial_hitchhiker_profile_setup():
     user_id = request.json['user_id']
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     # TODO: Check licence plate validity
-    query = """INSERT INTO "driver_profile" (user_id, hitchhiker_gender_preference, music_prefrence)
+    query = """INSERT INTO "hitchhiker_profile" (user_id, driver_gender_preference, music_preference)
                     VALUES (%s, '%s', '%s') """ % (user_id, gender_pref, music_pref)
-    query_update = """UPDATE users SET current_profile='Hitchhiker'"""
+    query_update = """UPDATE users SET current_profile='Hitchhiker' WHERE id=%s""" % user_id
 
     conn = db_connection()
 
     try:
-        commit_query(query, conn)
+        # commit_query(query, conn)
+        commit_query_multiple([query, query_update], conn)
     except Exception as e:
         print(e)
         return jsonify(e)
@@ -131,7 +142,7 @@ def update_driver_profile():
     brand = json["car_brand"]
 
     query_brand = """SELECT cm.id FROM car_brand cb INNER JOIN car_model cm ON cb.id = cm.brand_id WHERE cm.model='%s' AND cb.brand = '%s'""" % (
-    model, brand)
+        model, brand)
 
     conn = db_connection()
     try:
@@ -142,9 +153,9 @@ def update_driver_profile():
         return jsonify(e)
 
     query = """UPDATE driver_profile SET car_model = %s, license_plate = '%s', hitchhiker_gender_preference = '%s', 
-                music_prefrence = '%s', passenger_seat = %s WHERE user_id = %s""" % (
-                                                model_id, json["license_plate"], json["hitchhiker_gender_preference"],
-                                                json["music_prefrence"], json["passenger_seat"], json["user_id"])
+                music_preference = '%s', passenger_seat = %s WHERE user_id = %s""" % (
+        model_id, json["license_plate"], json["hitchhiker_gender_preference"],
+        json["music_preference"], json["passenger_seat"], json["user_id"])
 
     conn = db_connection()
     try:
@@ -161,8 +172,8 @@ def update_hitchhiker_profile():
     json = request.json
 
     query = """UPDATE hitchhiker_profile SET driver_gender_preference = '%s', 
-                    music_prefrence = '%s'WHERE user_id = %s""" % (
-        json["driver_gender_preference"], json["music_prefrence"], json["user_id"])
+                    music_preference = '%s'WHERE user_id = %s""" % (
+        json["driver_gender_preference"], json["music_preference"], json["user_id"])
 
     conn = db_connection()
     try:
@@ -178,7 +189,7 @@ def update_hitchhiker_profile():
 @route_user_management.route('/switch_profile', methods=['GET', 'POST'])
 @login_required
 def switch_profile():
-    user_id = 1
+    user_id = request.json['user_id']
     switch_to = ""
     conn = db_connection()
     query = """SELECT current_profile FROM users WHERE id = %s""" % (user_id)
@@ -197,4 +208,3 @@ def switch_profile():
     except Exception as e:
         print(e)
         return jsonify(e)
-

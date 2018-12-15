@@ -25,7 +25,7 @@ def upload_tables():
 
 
 def create_enums():
-    Gender_enum = """CREATE TYPE gender AS ENUM ('Male', 'Female', 'Both');"""
+    Gender_enum = """CREATE TYPE gender AS ENUM ('Male', 'Female');"""
     Music_enum = """CREATE TYPE music AS ENUM ('Electro', 'Pop', 'Rock', 'Rap');"""
     Profile_enum = """CREATE TYPE profile AS ENUM ('Driver', 'Hitchhiker');"""
     commands = [Gender_enum, Music_enum, Profile_enum]
@@ -41,6 +41,8 @@ def create_table():
                 password VARCHAR(50),
                 registration_date timestamp not null default CURRENT_TIMESTAMP,
                 email VARCHAR(100) UNIQUE,
+                gender gender,
+                device_reg_id TEXT,
                 current_profile profile
                 )
             """
@@ -49,8 +51,8 @@ def create_table():
                         user_id int,
                         car_model int,
                         license_plate VARCHAR(9),
-                        hitchhiker_gender_preference gender,
-                        music_prefrence music[],
+                        hitchhiker_gender_preference gender[],
+                        music_preference music[],
                         passenger_seat int,
                         CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES Users (id),
                         CONSTRAINT Driver_profile_model_id_fk FOREIGN KEY (car_model) REFERENCES Car_model (id)
@@ -59,8 +61,8 @@ def create_table():
 
     Hitchhiker_profile = """CREATE TABLE Hitchhiker_profile (
                             user_id int,
-                            driver_gender_preference gender,
-                            music_prefrence music[],
+                            driver_gender_preference gender[],
+                            music_preference music[],
                             CONSTRAINT Hitchhiker_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                             );
                         """
@@ -97,6 +99,20 @@ def create_table():
                                        CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                                    )
                                    """
+    possible_trip_pool = """CREATE TABLE possible_match_pool (
+                            match_id SERIAL PRIMARY KEY,
+                            intersection_polyline TEXT,
+                            hitchhiker_id int,
+                            driver_id int,
+                            trip_start_time timestamp,
+                            is_driver_liked boolean,
+                            is_hitchhiker_like boolean,
+                            is_driver_liked boolean default false ,
+                            is_hitchhiker_liked boolean default false,
+                            CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (driver_id) REFERENCES Users (id),
+                            CONSTRAINT hitchhiker_profile_user_id_fk FOREIGN KEY (hitchhiker_id) REFERENCES Users (id)
+                            );
+                        """
 
     Hitchhiker_matchmaking_pool_start = """SELECT AddGeometryColumn ('hitchhiker_matchmaking_pool','trip_start_point',4326,'POINT',2);
                                        """
@@ -110,7 +126,8 @@ def create_table():
     commands = [Users, Car_brand, Car_model, Driver_profile, Hitchhiker_profile,
                 Driver_matchmaking_pool, Hitchhiker_matchmaking_pool,
                 Hitchhiker_matchmaking_pool_start, Hitchhiker_matchmaking_pool_end,
-                Driver_matchmaking_pool_start, Driver_matchmaking_pool_end]
+                Driver_matchmaking_pool_start, Driver_matchmaking_pool_end,
+                possible_trip_pool]
     return commands
 
 
@@ -130,7 +147,7 @@ def drop_tables():
 
 def create_views():
     hitchhiker_matchmaking = """CREATE VIEW  hitchhiker_matchmaking AS
-    SELECT u.id, hm.trip_start_time, hm.destination_polyline, hm.trip_start_point, hm.trip_end_point, hp.driver_gender_preference, hp.music_prefrence
+    SELECT u.id, hm.trip_start_time, hm.destination_polyline, hm.trip_start_point, hm.trip_end_point, hp.driver_gender_preference, hp.music_preference
     FROM hitchhiker_matchmaking_pool hm
         inner join
     users u
@@ -140,7 +157,7 @@ def create_views():
         on hm.user_id = hp.user_id;"""
 
     driver_matchmaking = """CREATE VIEW  driver_matchmaking AS
-    SELECT u.id, dm.trip_start_time, dm.destination_polyline, dm.trip_start_point, dm.trip_end_point, dp.hitchhiker_gender_preference, dp.music_prefrence
+    SELECT u.id, dm.trip_start_time, dm.destination_polyline, dm.trip_start_point, dm.trip_end_point, dp.hitchhiker_gender_preference, dp.music_preference
     FROM driver_matchmaking_pool dm
             inner join
         users u
