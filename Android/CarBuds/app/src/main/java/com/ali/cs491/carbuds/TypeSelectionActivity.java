@@ -18,6 +18,7 @@ public class TypeSelectionActivity extends AppCompatActivity {
         carOwnerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                RouteManager.setUserType(RouteManager.DRIVER);
                 Intent intent = new Intent(TypeSelectionActivity.this, StartSelectionActivity.class);
                 startActivity(intent);
             }
@@ -25,6 +26,7 @@ public class TypeSelectionActivity extends AppCompatActivity {
         hitchhikerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                RouteManager.setUserType(RouteManager.HITCHHIKER);
                 Intent intent = new Intent(TypeSelectionActivity.this, StartSelectionActivity.class);
                 startActivity(intent);
             }

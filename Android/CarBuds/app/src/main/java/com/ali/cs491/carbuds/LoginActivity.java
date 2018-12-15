@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-
+    public static String token;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -283,53 +283,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             username = email;
             mPassword = password;
         }
-
-        private void setupURLConnection(){
-            OutputStream out = null;
-            JSONObject jsonObj = new JSONObject();
-            try {
-                jsonObj.put("name", "sli");
-                jsonObj.put("surname", "cetin");
-                jsonObj.put("email", "alctn@gmail.com");
-                jsonObj.put("username", username);
-                jsonObj.put("password", mPassword);
-
-            } catch (JSONException e) {
+        private String setupURLConnection(){
+            JSONObject jsonObject = new JSONObject();
+            try{
+                jsonObject.put("username", username);
+                jsonObject.put("password", mPassword);
+            } catch(JSONException e){
                 e.printStackTrace();
             }
-            HttpURLConnection urlConnection;
-            try {
-                URL url = new URL("http://35.205.45.78:5053/signup");
-              //  URL url = new URL("http://10.42.0.221:5000/signup");
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type","application/json");
-
-                urlConnection.setDoOutput(true);
-                out = new BufferedOutputStream(urlConnection.getOutputStream());
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                writer.write(jsonObj.toString());
-                writer.flush();
-                writer.close();
-                out.close();
-                urlConnection.connect();
-                Log.i("Carbuds" , urlConnection.getResponseMessage());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                Log.i("Carbuds","exception");
-            }
-
-
-
-
+            Connection connection= new Connection();
+            connection.setConnection(Connection.LOGIN, jsonObject);
+            return connection.getResponseMessage();
         }
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
             try {
-                setupURLConnection();
+                String msg = setupURLConnection();
+                if(msg.equals("False")){
+                    return false;
+                } else {
+                    token = msg;
+                }
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

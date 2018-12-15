@@ -36,7 +36,7 @@ public class TargetSelectionActivity extends FragmentActivity implements OnMapRe
         demo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RouteManager.setStartPoint(targetMarker.getPosition());
+                RouteManager.setEndPoint(targetMarker.getPosition());
                 Intent intent = new Intent(TargetSelectionActivity.this,MatchmakingActivity.class);
                 startActivity(intent);
             }

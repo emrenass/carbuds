@@ -1,11 +1,17 @@
 package com.ali.cs491.carbuds;
 
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 
 public class MatchmakingActivity extends AppCompatActivity {
@@ -42,5 +48,23 @@ public class MatchmakingActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private void sendRoute(){
+        Route route = RouteManager.getRoute();
+        JSONObject jsonObj = new JSONObject();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        System.out.println(formatter.format(date));
+        try {
+            jsonObj.put("user_id", "13"); // get id
+            jsonObj.put("trip_start_point", RouteManager.getPointString(route.getStartPoint()));
+            jsonObj.put("trip_end_point", RouteManager.getPointString(route.getEndPoint()));
+            jsonObj.put("available_seat", "2");
+            jsonObj.put("trip_start_time", formatter.format(date));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

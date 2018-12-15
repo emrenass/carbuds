@@ -28,6 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +62,21 @@ public class SignUpActivity extends AppCompatActivity implements LoaderCallbacks
     private EditText mConfirmPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    public void signup(){
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("name", "sli");
+            jsonObj.put("surname", "cetin");
+            jsonObj.put("email", "alctn@gmail.com");
+        //    jsonObj.put("username", username);
+         //   jsonObj.put("password", mPassword);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Connection connection = new Connection();
+        connection.setConnection(Connection.SIGNUP,jsonObj);
+        connection.getResponseMessage();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
