@@ -6,7 +6,7 @@ to be run at a different server
 request:
 {
 	"user_id" : int,
-	"target_id": int
+	"target_id": int,
   	"session_token" : string
 }
 
