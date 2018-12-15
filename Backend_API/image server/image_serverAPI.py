@@ -34,13 +34,14 @@ def hello_images():
 @app.route("/get_pfp", methods=["POST"])
 def getspfp():
     user_id = request.json['user_id']
+	target_id = request.json['target_id']
 
     if check_session(user_id, "") != True:
         return "SESSION DOES NOT EXIST"
 
     myConnection = psycopg2.connect(host=hostname, user=username, password=password, dbname=database, port=portno)
 
-    qString = "SELECT id, image FROM user_pfp WHERE id =" + str(user_id)
+    qString = "SELECT id, image FROM user_pfp WHERE id =" + str(target_id)
     with myConnection.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(qString)
         rows = cur.fetchall()
