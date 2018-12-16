@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.ali.cs491.carbuds"
+        applicationId "carbuds.fcm_test"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
@@ -38,5 +39,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
-    implementation "com.google.android.gms:play-services-location:15.0.1"
+    implementation "com.google.android.gms:play-services-location:16.0.0"
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }

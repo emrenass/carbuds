@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Dec 16 18:49:35 EET 2018
+#Sun Dec 16 19:27:53 EET 2018
 1.base=/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/transforms/stripDebugSymbol/debug/0
 2.path=lib/arm64-v8a/libnative-lib.so
 0.baseType=DIRECTORY

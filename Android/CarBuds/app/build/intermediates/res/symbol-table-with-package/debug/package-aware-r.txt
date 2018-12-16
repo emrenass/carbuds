@@ -1,4 +1,4 @@
-com.ali.cs491.carbuds
+carbuds.fcm_test
 anim abc_fade_in
 anim abc_fade_out
 anim abc_grow_fade_in_from_bottom
@@ -1470,6 +1470,12 @@ string action_sign_in_short
 string app_name
 string appbar_scrolling_view_behavior
 string bottom_sheet_behavior
+string btn_send_token
+string btn_send_tokens
+string btn_send_topic
+string btn_show_token
+string btn_subscribe_news
+string btn_unsubscribe_news
 string character_counter_content_description
 string character_counter_pattern
 string common_google_play_services_enable_button
@@ -1490,6 +1496,7 @@ string common_google_play_services_wear_update_text
 string common_open_on_phone
 string common_signin_button_text
 string common_signin_button_text_long
+string default_web_client_id
 string error_confirm_password
 string error_field_required
 string error_incorrect_password
@@ -1497,10 +1504,18 @@ string error_invalid_email
 string error_invalid_password
 string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
+string fcm_fallback_notification_channel_label
+string firebase_database_url
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
 string google_maps_API_key
 string google_maps_key
+string google_storage_bucket
 string hide_bottom_view_on_scroll_behavior
 string mtrl_chip_close_icon_content_description
+string notification_channel_id
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
@@ -1521,12 +1536,15 @@ string pref_title_social_recommendations
 string pref_title_sync_frequency
 string pref_title_system_sync_settings
 string pref_title_vibrate
+string project_id
 string prompt_email
 string prompt_password
 string prompt_rePassword
+string result
 string search_menu_title
 string start_selection_finished
 string status_bar_notification_info_overflow
+string subscribed
 string target_selection_finished
 string title_activity_login
 string title_activity_maps
@@ -1534,6 +1552,7 @@ string title_activity_selection
 string title_activity_settings
 string title_activity_sign_up
 string title_activity_targer_selection
+string unsubscribed
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog
