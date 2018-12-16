@@ -157,4 +157,7 @@ def push_match_notification(device_reg_id=None):
     print("Notification Sent")
 
 
-match_possible_trip()
+# match_possible_trip()
+
+
+push_match_notification('cfYE1VeJly0:APA91bHLHZTL8B4lE38pgzh1Ci7jSc6l3yQVxHG3rZgcqU1C1EDEBgfPtEupX2ENvIzbI-3cIByMHOjyBUGJlEBeqR93sHRVDksVogIf8Yo37f4ozhkykvgv4fNXTA1AZ10hB6yIehBI')

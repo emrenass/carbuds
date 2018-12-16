@@ -1,4 +1,12 @@
 # Created by .ignore support plugin (hsz.mobi)
-
+/Android
+/Backend_API/carbudsenv
 /venv
 .idea/
+Backend_API/rabbitmq/__pycache__/
+Dockerfile
+Notification_Server/__pycache__/
+Notification_Server/cs-491-carbuds-1559f5e99881.json
+Notification_Server/database/
+docker-compose.yml
+rabbitmq-isolated.conf
