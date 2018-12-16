@@ -6,6 +6,43 @@ import jwt
 
 route_user_management = Blueprint('route_user_management', __name__)
 
+@route_user_management.route('/check_hitchhiker_profile', methods=['POST'])
+@login_required
+def check_hitchhiker_profile():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+
+    query = """SELECT *
+                FROM hitchhiker_profile
+                WHERE user_id = %s """ % user_id
+    try:
+        conn = db_connection()
+        rows = execute_query(query, conn)
+    except Exception as e:
+        print(e)
+        return "Database Error"
+    if rows:
+        return jsonify(True)
+    return jsonify(False)
+
+@route_user_management.route('/check_driver_profile', methods=['POST'])
+@login_required
+def check_driver_profile():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+
+    query = """SELECT *
+                FROM driver_profile
+                WHERE user_id = %s """ % user_id
+    try:
+        conn = db_connection()
+        rows = execute_query(query, conn)
+    except Exception as e:
+        print(e)
+        return "Database Error"
+    if rows:
+        return jsonify(True)
+    return jsonify(False)
 
 @route_user_management.route('/login', methods=['POST'])
 def login():
@@ -24,7 +61,7 @@ def login():
             }
 
         return jsonify({"user_id": result[0]["id"],
-                        "token": jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256')})
+                        "token": jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256').decode("UTF-8")})
     else:
         return jsonify(False)
 
