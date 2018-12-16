@@ -1174,7 +1174,6 @@ id design_navigation_view
 id dimensions
 id direct
 id disableHome
-id eMail
 id edit_query
 id email
 id email_login_form
@@ -1250,8 +1249,6 @@ id pin
 id progress_circular
 id progress_horizontal
 id radio
-id rePassword
-id register_button
 id right
 id right_icon
 id right_side
@@ -1391,7 +1388,6 @@ layout activity_login
 layout activity_main
 layout activity_matchmaking
 layout activity_selection
-layout activity_sign_up
 layout activity_targer_selection
 layout activity_type_selection
 layout design_bottom_navigation_item

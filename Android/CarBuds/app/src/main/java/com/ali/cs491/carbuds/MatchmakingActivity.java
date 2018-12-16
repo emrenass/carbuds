@@ -1,6 +1,6 @@
 package com.ali.cs491.carbuds;
 
-import android.os.Build;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +18,7 @@ public class MatchmakingActivity extends AppCompatActivity {
     private static ImageView imageView;
     private static ArrayList<Profile> profiles;
     private static int profileIndex;
+    private SendRouteTask task;
     private void getProfiles(){
         profiles = new ArrayList<Profile>();
         //todo: delete this part after connecting server
@@ -30,6 +31,8 @@ public class MatchmakingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        task = new SendRouteTask();
+        task.execute((Void) null);
         getProfiles();
         setContentView(R.layout.activity_matchmaking);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -49,22 +52,41 @@ public class MatchmakingActivity extends AppCompatActivity {
             }
         });
     }
+
+
     private void sendRoute(){
         Route route = RouteManager.getRoute();
         JSONObject jsonObj = new JSONObject();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
+        Connection connection = new Connection();
         System.out.println(formatter.format(date));
         try {
-            jsonObj.put("user_id", "13"); // get id
+            jsonObj.put("token", LoginActivity.token );
+            jsonObj.put("user_id", "2"); // get id
             jsonObj.put("trip_start_point", RouteManager.getPointString(route.getStartPoint()));
             jsonObj.put("trip_end_point", RouteManager.getPointString(route.getEndPoint()));
-            jsonObj.put("available_seat", "2");
             jsonObj.put("trip_start_time", formatter.format(date));
-
+            if(route.getUserType() == RouteManager.DRIVER) {
+                jsonObj.put("available_seat", "2");
+                connection.setConnection(Connection.SET_TRIP_DRIVER, jsonObj);
+                connection.getResponseMessage();
+            } else {
+                connection.setConnection(Connection.SET_TRIP_HITCHHIKER,jsonObj);
+                connection.getResponseMessage();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    public class SendRouteTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            sendRoute();
+            return null;
+        }
+    }
+
 }

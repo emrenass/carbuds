@@ -26,6 +26,6 @@ public class RouteManager {
         return route;
     }
     public static String getPointString(LatLng point){
-        return point.latitude + "," + point.longitude;
+        return String.format("%.6f",point.latitude) + "," + String.format("%.6f",point.longitude);
     }
 }
