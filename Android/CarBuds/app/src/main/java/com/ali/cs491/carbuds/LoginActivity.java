@@ -275,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             String msg = setupURLConnection();
             Log.i("Carbuds",msg);
-            if(msg.equals("False")){
+            if(msg.equals("false\n")){
                 return false;
             } else {
                 token = msg;

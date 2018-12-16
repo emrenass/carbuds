@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mSurnameView;
     private EditText mUsernameView;
     private Spinner mGender;
-
+    private Button mRegisterButton;
     private static final String[] genders = {"Male", "Female"};
 
 
@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
         mGender.setAdapter(adapter);
         mGender.setSelection(0);
 
-        Button mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -298,7 +298,7 @@ public class RegisterActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Connection connection= new Connection();
-            connection.setConnection(Connection.LOGIN, jsonObject);
+            connection.setConnection(Connection.SIGNUP, jsonObject);
             return connection.getResponseMessage();
         }
 
@@ -307,17 +307,16 @@ public class RegisterActivity extends AppCompatActivity {
             try {
 
                 String msg = setupURLConnection();
-                if(msg!=null)
-                if(msg.equals("OK")){
-                    // Simulate network access
-                    Thread.sleep(2000);
-                    return true;
+                if(msg!=null) {
+                    if (msg.equals("true\n")) {
+                        // Simulate network access
+                        return true;
+                    } else {
+                        // Simulate network access.
+                        Thread.sleep(2000);
+                        return false;
+                    }
                 } else {
-                    // Simulate network access.
-                    Thread.sleep(2000);
-                    return false;
-                }
-                else{
                     Log.w("Carbuds", "Null response at signup");
                     return false;
                 }
