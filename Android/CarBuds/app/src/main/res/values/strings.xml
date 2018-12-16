@@ -1,6 +1,15 @@
 <resources>
+    <!-- Aras eklenen -->
+    <string name="title_activity_register">Register</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_surname">Surname</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_gender">Select a gender</string>
+
+
     <string name="app_name">CarBuds</string>
     <string name="title_activity_login">Login</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
