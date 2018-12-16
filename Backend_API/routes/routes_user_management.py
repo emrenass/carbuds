@@ -22,7 +22,9 @@ def login():
                   "username": username,
                   "user_id": result[0]["id"]
             }
-        return jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256')
+
+        return jsonify({"user_id": result[0]["id"],
+                        "token": jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256')})
     else:
         return jsonify(False)
 
