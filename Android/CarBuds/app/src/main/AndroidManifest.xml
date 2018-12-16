@@ -58,6 +58,7 @@
             android:name=".StartSelectionActivity"
             android:label="@string/title_activity_selection" />
         <activity android:name=".MatchmakingActivity" />
+
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
@@ -81,6 +82,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ali.cs491.carbuds.StartSelectionActivity" />
         </activity>
+
     </application>
 
 </manifest>

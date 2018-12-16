@@ -23,8 +23,19 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
 
     private GoogleMap mMap;
     private Marker startMarker;
+    private Marker endMarker;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    private boolean First = false;
+    private Button demo;
+    public void firstDone(){
+        First = true;
+        demo.setText("Done");
+        startMarker.setDraggable(false);
+        endMarker.setVisible(true);
+    }
+    public boolean isFirstDone(){
+        return First;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +44,19 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Button demo = findViewById(R.id.demoButton);
+        demo = findViewById(R.id.demoButton);
         demo.setText(getString(R.string.start_selection_finished));
         demo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RouteManager.setStartPoint(startMarker.getPosition());
-                Intent intent = new Intent(StartSelectionActivity.this,TargetSelectionActivity.class);
-                startActivity(intent);
+                if(isFirstDone()){
+                    RouteManager.setStartPoint(startMarker.getPosition());
+                    RouteManager.setEndPoint(endMarker.getPosition());
+                    Intent intent = new Intent(StartSelectionActivity.this,MatchmakingActivity.class);
+                    startActivity(intent);
+                } else{
+                    firstDone();
+                }
             }
         });
     }
@@ -68,6 +84,7 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
                         if (location != null) {
                             LatLng konum = new LatLng(location.getLatitude(),location.getLongitude());
                             startMarker = mMap.addMarker(new MarkerOptions().position(konum).title("Start Point").draggable(true));
+                            endMarker = mMap.addMarker(new MarkerOptions().position(konum).title("End Point").draggable(true).visible(false).alpha(0.5f));
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(konum));
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(konum,12.0f));
                             // Logic to handle location object
@@ -79,7 +96,11 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
             @Override
             public void onMapClick(LatLng latlng) {
                 // TODO Auto-generated method stub
-                startMarker.setPosition(latlng);
+                if (isFirstDone()){
+                    endMarker.setPosition(latlng);
+                } else{
+                    startMarker.setPosition(latlng);
+                }
             }
         });
 
