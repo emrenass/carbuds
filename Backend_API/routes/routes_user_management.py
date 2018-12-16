@@ -242,7 +242,7 @@ def check_hitchhiker_profile():
     return jsonify(False)
 
 @route_user_management.route('/check_driver_profile', methods=['POST'])
-def check_hitchhiker_profile():
+def check_driver_profile():
     token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     user_id = token['user_id']
 
