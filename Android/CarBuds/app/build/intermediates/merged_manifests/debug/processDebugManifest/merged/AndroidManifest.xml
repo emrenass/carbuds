@@ -75,21 +75,6 @@
             android:label="@string/title_activity_selection" />
         <activity android:name="com.ali.cs491.carbuds.MatchmakingActivity" />
         <activity
-            android:name="com.ali.cs491.carbuds.SignUpActivity"
-            android:label="@string/title_activity_sign_up"
-            android:parentActivityName="com.ali.cs491.carbuds.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ali.cs491.carbuds.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.ali.cs491.carbuds.TargetSelectionActivity"
-            android:label="@string/title_activity_targer_selection" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ali.cs491.carbuds.StartSelectionActivity" />
-        </activity>
-        <activity
             android:name="com.google.android.gms.common.api.GoogleApiActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />

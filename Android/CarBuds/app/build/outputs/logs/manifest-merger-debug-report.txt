@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
+ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
 MERGED from [com.android.support:design:28.0.0] /root/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/7cfbf475f46142191c30d58f0dd7eef7/AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.support:appcompat-v7:28.0.0] /root/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/6a6c55a6300fa17a3fc35e94989bd104/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /root/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/f3ec7514ca00147f3e26ba1fd5d52e52/AndroidManifest.xml:2:1-11:12
@@ -43,20 +43,20 @@ MERGED from [com.android.support:interpolator:28.0.0] /root/.gradle/caches/trans
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /root/.gradle/caches/transforms-1/files-1.1/livedata-1.1.1.aar/400ba47d48eb8ad88f97ffc0e93faa77/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /root/.gradle/caches/transforms-1/files-1.1/livedata-core-1.1.1.aar/313b9b977209909dd9d810d2cc0ec14f/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] /root/.gradle/caches/transforms-1/files-1.1/runtime-1.1.1.aar/681190e1d9a6fb1cae8084114f18bd6a/AndroidManifest.xml:17:1-22:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
-INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
+INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
 	package
 		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:3:5-36
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
-		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
+		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
-		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-70:12
+		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:1-63:12
 		INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:2:11-69
@@ -83,7 +83,7 @@ ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.
 	android:name
 		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:15:22-76
 application
-ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:17:5-68:19
+ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:17:5-61:19
 MERGED from [com.android.support:design:28.0.0] /root/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/7cfbf475f46142191c30d58f0dd7eef7/AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:design:28.0.0] /root/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/7cfbf475f46142191c30d58f0dd7eef7/AndroidManifest.xml:22:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.1.3] /root/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.1.3.aar/f3ec7514ca00147f3e26ba1fd5d52e52/AndroidManifest.xml:9:5-20
@@ -176,12 +176,6 @@ activity#com.ali.cs491.carbuds.MatchmakingActivity
 ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:60:9-57
 	android:name
 		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:60:19-54
-activity#com.ali.cs491.carbuds.TargetSelectionActivity
-ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:61:9-67:20
-	android:label
-		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:63:13-68
-	android:name
-		ADDED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml:62:13-52
 uses-sdk
 INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/ali/cs492/carbuds/Android/CarBuds/app/src/main/AndroidManifest.xml

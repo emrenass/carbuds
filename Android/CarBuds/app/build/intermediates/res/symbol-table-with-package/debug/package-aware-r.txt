@@ -1274,7 +1274,6 @@ id search_src_text
 id search_voice_btn
 id select_dialog_listview
 id selected
-id setRouteButton
 id settingsButton
 id shortcut
 id showCustom
@@ -1388,7 +1387,6 @@ layout activity_login
 layout activity_main
 layout activity_matchmaking
 layout activity_selection
-layout activity_targer_selection
 layout activity_type_selection
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
