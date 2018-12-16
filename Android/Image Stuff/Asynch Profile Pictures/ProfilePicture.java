@@ -4,7 +4,7 @@ ADDD   YOUR PACKAGE HERE
 
 */
 
-
+import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
@@ -88,7 +88,10 @@ public class ProfilePicture {
     }
 
     public void synch(){
-        connection.execute( imageServerUrl, jsonRequestData);
+        if(connection.getStatus() == AsyncTask.Status.FINISHED)
+        {
+            connection.execute( imageServerUrl, jsonRequestData);
+        }
     }
 
     public void interpretBitmapStringResponse( InputStream strm){
