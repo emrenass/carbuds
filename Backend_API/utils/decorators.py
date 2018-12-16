@@ -16,9 +16,5 @@ def login_required(f):
         except:
             return make_response(redirect('/login'))
 
-        if result["user_id"] == request.json["user_id"]:
-            return f(*args, **kwargs)
-        else:
-            return make_response(redirect('/login'))
-
+        return f(*args, **kwargs)
     return decorated

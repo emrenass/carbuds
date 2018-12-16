@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import jwt
 from flask import request, make_response, render_template, Blueprint, jsonify, redirect
 from flask import current_app as app
 from Backend_API.utils.decorators import login_required
@@ -13,8 +14,10 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
+#@login_required
 def set_trip_driver():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
     end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
     trip_start_time = request.json['trip_start_time']
@@ -28,6 +31,8 @@ def set_trip_driver():
                                          units='metric',
                                          departure_time=datetime.now())
 
+    if not directions_result:
+        return jsonify("No Available Route")
     route_polyline = directions_result[0]['overview_polyline']['points']
 
     query = """INSERT INTO driver_matchmaking_pool 
@@ -44,7 +49,7 @@ def set_trip_driver():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return "Database Error"
 
     find_and_write_hitchhiker_candidates(user_id)
 
@@ -52,8 +57,10 @@ def set_trip_driver():
 
 
 @route_matchmaking.route('/set_trip_hitchhiker', methods=['POST'])
+@login_required
 def set_trip_hitchhiker():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     start_lat, start_lon = tuple(request.json['trip_start_point'].split(','))
     end_lat, end_lon = tuple(request.json['trip_end_point'].split(','))
     trip_start_time = request.json['trip_start_time']
@@ -65,6 +72,9 @@ def set_trip_hitchhiker():
                                          mode="transit",
                                          units='metric',
                                          departure_time=datetime.now())
+
+    if not directions_result:
+        return jsonify("No Available Route")
 
     route_polyline = directions_result[0]['overview_polyline']['points']
 
@@ -82,7 +92,7 @@ def set_trip_hitchhiker():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return e
+        return "Database Error"
     find_and_write_driver_candidates(user_id)
     return jsonify(True)
 
@@ -99,8 +109,10 @@ def polyline_encoder(coord_list):
 
 
 @route_matchmaking.route('/get_driver_candidate', methods=['POST'])
+@login_required
 def get_driver_candidate():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
 
     query = """SELECT *
                 FROM possible_match_pool
@@ -117,8 +129,10 @@ def get_driver_candidate():
 
 
 @route_matchmaking.route('/get_hitchhiker_candidate', methods=['POST'])
+@login_required
 def get_hitchhiker_candidate():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
 
     query = """SELECT *
                     FROM possible_match_pool
@@ -135,6 +149,7 @@ def get_hitchhiker_candidate():
 
 
 @route_matchmaking.route('/cancel_driver_trip', methods=['POST'])
+@login_required
 def cancel_driver_trip():
     trip_id = request.json['trip_id']
 
@@ -151,6 +166,7 @@ def cancel_driver_trip():
 
 
 @route_matchmaking.route('/cancel_hitchhiker_trip', methods=['POST'])
+@login_required
 def cancel_hitchhiker_trip():
     trip_id = request.json['trip_id']
 
@@ -168,6 +184,7 @@ def cancel_hitchhiker_trip():
 
 
 @route_matchmaking.route('/dislike_match', methods=['POST'])
+@login_required
 def dislike_match():
     possible_match_id = request.json['possible_match_id']
 
@@ -181,13 +198,15 @@ def dislike_match():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return jsonify("Database Error")
     return jsonify(True)
 
 
 @route_matchmaking.route('/like_match', methods=['POST'])
+@login_required
 def like_match():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     possible_match_id = request.json['possible_match_id']
 
     query = """UPDATE possible_match_pool
@@ -207,16 +226,18 @@ def like_match():
         commit_query(query, conn)
     except Exception as e:
         print(e)
-        return jsonify(e)
+        return jsonify("Database Error")
     return jsonify(True)
 
 
 @route_matchmaking.route('/remove_match', methods=['POST'])
+@login_required
 def remove_match():
     pass
 
 
 @route_matchmaking.route('/finish_match', methods=['POST'])
+@login_required
 def finish_match():
     pass
 

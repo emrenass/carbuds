@@ -99,7 +99,7 @@ def create_table():
                                        CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
                                    )
                                    """
-    possible_trip_pool = """CREATE TABLE possible_match_pool (
+    possible_match_pool = """CREATE TABLE possible_match_pool (
                             match_id SERIAL PRIMARY KEY,
                             intersection_polyline TEXT,
                             hitchhiker_id int,
@@ -109,10 +109,30 @@ def create_table():
                             is_hitchhiker_like boolean,
                             is_driver_liked boolean default false ,
                             is_hitchhiker_liked boolean default false,
+                            is_matched boolean default false,
                             CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (driver_id) REFERENCES Users (id),
                             CONSTRAINT hitchhiker_profile_user_id_fk FOREIGN KEY (hitchhiker_id) REFERENCES Users (id)
                             );
                         """
+
+    match_pool = """create table match_pool(
+                    match_id SERIAL PRIMARY KEY,
+                    intersection_polyline TEXT,
+                    hitchhiker_id int,
+                    driver_id int,
+                    start_point TEXT,
+                    end_point TEXT,
+                    trip_start_time timestamp,
+                    driver_name varchar(50),
+                    driver_lastname varchar(50),
+                    hitchhiker_name varchar(50),
+                    hitchhiker_lastname varchar(50),
+                    exchange_name TEXT,
+                    hitchhiker_queue TEXT,
+                    driver_queue TEXT,
+                    CONSTRAINT Driver_profile_User_id_fk FOREIGN KEY (driver_id) REFERENCES Users (id),
+                    CONSTRAINT hitchhiker_profile_user_id_fk FOREIGN KEY (hitchhiker_id) REFERENCES Users (id)
+                    );"""
 
     Hitchhiker_matchmaking_pool_start = """SELECT AddGeometryColumn ('hitchhiker_matchmaking_pool','trip_start_point',4326,'POINT',2);
                                        """
@@ -127,7 +147,7 @@ def create_table():
                 Driver_matchmaking_pool, Hitchhiker_matchmaking_pool,
                 Hitchhiker_matchmaking_pool_start, Hitchhiker_matchmaking_pool_end,
                 Driver_matchmaking_pool_start, Driver_matchmaking_pool_end,
-                possible_trip_pool]
+                possible_match_pool, match_pool]
     return commands
 
 
