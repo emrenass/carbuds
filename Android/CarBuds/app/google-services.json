@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "396320992314",
+    "firebase_url": "https://test-97347.firebaseio.com",
+    "project_id": "test-97347",
+    "storage_bucket": "test-97347.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396320992314:android:56f4be730552db78",
+        "android_client_info": {
+          "package_name": "carbuds.fcm_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396320992314-f9ubdorolq5qsj5oj6tml8h7jpl5bc22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBILqbGonVbqU2lr_9AlbE82XT4MlRpxZY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
