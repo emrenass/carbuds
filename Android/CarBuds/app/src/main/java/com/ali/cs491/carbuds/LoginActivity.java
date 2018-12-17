@@ -3,7 +3,9 @@ package com.ali.cs491.carbuds;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -47,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private UserLoginTask mAuthTask = null;
     public static String token;
+    public static int user_id;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -56,6 +59,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        readShared();
+        if(user_id != -1){
+            Intent intent = new Intent(LoginActivity.this,TypeSelectionActivity.class);
+            startActivity(intent);
+        }
         setContentView(R.layout.activity_login);
         setupActionBar();
         // Set up the login form.
@@ -106,6 +114,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
+    public void writeShared(String token, int user_id){
+        SharedPreferences sharedPref = this.getSharedPreferences("SHARED",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("token", token);
+        editor.putInt("user_id", user_id);
+        editor.commit();
+    }
+    public void readShared(){
+        SharedPreferences sharedPref = this.getSharedPreferences("SHARED",Context.MODE_PRIVATE);
+        user_id = sharedPref.getInt("user_id", -1);
+        token = sharedPref.getString("token", "");
+    }
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -274,11 +294,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             String msg = setupURLConnection();
+            JSONObject jsonObj = null;
             Log.i("Carbuds",msg);
+            try {
+                 jsonObj = new JSONObject(msg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             if(msg.equals("false\n")){
                 return false;
             } else {
-                token = msg;
+                try {
+                    token = jsonObj.getString("token");
+                    int user_id = jsonObj.getInt("user_id");
+                    writeShared(token, user_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             return true;
         }

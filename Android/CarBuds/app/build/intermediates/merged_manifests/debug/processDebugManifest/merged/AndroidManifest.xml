@@ -99,7 +99,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ali.cs491.carbuds.StartSelectionActivity" />
         </activity>
-
+        <activity android:name="com.ali.cs491.carbuds.DatePickerActivity" />
         <!--
              FirebaseMessagingService performs security checks at runtime,
              no need for explicit permissions despite exported="true"

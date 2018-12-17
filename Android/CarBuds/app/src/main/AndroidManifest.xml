@@ -20,9 +20,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +57,6 @@
             android:name=".StartSelectionActivity"
             android:label="@string/title_activity_selection" />
         <activity android:name=".MatchmakingActivity" />
-
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
@@ -82,7 +80,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ali.cs491.carbuds.StartSelectionActivity" />
         </activity>
-
+        <activity android:name=".DatePickerActivity"></activity>
     </application>
 
 </manifest>

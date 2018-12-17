@@ -127,7 +127,7 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
                 if (isFirstDone()) {
                     RouteManager.setStartPoint(startMarker.getPosition());
                     RouteManager.setEndPoint(endMarker.getPosition());
-                    Intent intent = new Intent(StartSelectionActivity.this, MatchmakingActivity.class);
+                    Intent intent = new Intent(StartSelectionActivity.this, DatePickerActivity.class);
                     startActivity(intent);
                 } else {
                     firstDone();
@@ -179,6 +179,8 @@ public class StartSelectionActivity extends FragmentActivity implements OnMapRea
                                 startMarker = mMap.addMarker(new MarkerOptions().position(konum).title("Start Point").draggable(true));
                                 endMarker = mMap.addMarker(new MarkerOptions().position(konum).title("End Point").draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                                 endMarker.setVisible(false);
+                             //   startMarker.showInfoWindow();
+                            //    endMarker.showInfoWindow();
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(konum));
                                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(konum, 12.0f));
                                 // Logic to handle location object

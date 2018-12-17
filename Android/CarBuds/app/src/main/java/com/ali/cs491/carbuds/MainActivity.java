@@ -38,14 +38,16 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
-
+    public void readShared(){
+        SharedPreferences sharedPref = this.getSharedPreferences("SHARED",Context.MODE_PRIVATE);
+        int user_id = sharedPref.getInt("user_id", -1);
+        String token = sharedPref.getString("token", "");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      //  SharedPreferences sharedpreferences = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
-      //  int isLogged = sharedpreferences.getInt("login", 0);
-
+        readShared();
         // Example of a call to a native method
         Button loginButton = findViewById(R.id.loginButton);
         Button signUpButton = findViewById(R.id.signUpButton);

@@ -2,11 +2,14 @@ package com.ali.cs491.carbuds;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Date;
+
 public class RouteManager {
-    private static Route route;
+    private static Trip trip;
     private static LatLng startPoint;
     private static LatLng endPoint;
     private static int userType;
+    private static Date date;
     public static final int  DRIVER = 0;
     public static final int  HITCHHIKER = 1;
 
@@ -14,16 +17,20 @@ public class RouteManager {
         userType = type;
     }
     public static void setStartPoint(LatLng point){
-        route = null;
+        trip = null;
         startPoint = point;
     }
     public static void setEndPoint(LatLng point){
         endPoint = point;
-        route = new Route(startPoint, endPoint, userType);
-        // todo: send route to server
+
+        // todo: send trip to server
     }
-    public static Route getRoute(){
-        return route;
+    public static void setDate(Date dt){
+        date = dt;
+        trip = new Trip(startPoint, endPoint, userType,date);
+    }
+    public static Trip getTrip(){
+        return trip;
     }
     public static String getPointString(LatLng point){
         return String.format("%.6f",point.latitude) + "," + String.format("%.6f",point.longitude);
