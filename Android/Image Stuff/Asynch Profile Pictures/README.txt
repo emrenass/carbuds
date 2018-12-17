@@ -65,3 +65,7 @@ At your UI(Main) thread ;
 
 PFPSetActivity setActivity = new PFPSetActivity( int user_id, int session_id, Bitmap bmp, AppCOmpatActivity watcher);
 setActivity.execute();
+
+owner_id : phone users own id
+session_id : placeholder for now
+watcher: listening UI object
