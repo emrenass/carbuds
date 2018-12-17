@@ -122,4 +122,5 @@
     <string name="result">Something will happen here&#8230;</string>
     <string name="subscribed">Subscribed to news topic</string>
     <string name="unsubscribed">Unsubscribed from news topic</string>
+    <string name="title_activity_initial_driver_profile">InitialDriverProfileActivity</string>
 </resources>

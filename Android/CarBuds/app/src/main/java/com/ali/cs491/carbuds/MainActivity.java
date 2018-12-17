@@ -63,12 +63,8 @@ public class MainActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-            startActivity(intent);
-
-            //   Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-            //     startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, InitialDriverProfileActivity.class);
+                startActivity(intent);
             }
         });
 

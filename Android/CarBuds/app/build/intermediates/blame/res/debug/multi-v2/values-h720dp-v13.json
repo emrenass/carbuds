@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
+            "outputFile": "/Users/dogukan/Bilkent/CS491/Carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
-                    "source": "/root/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/af394c43f9044eedb28945c67ca482bb/res/values-h720dp-v13/values-h720dp-v13.xml",
+                    "source": "/Users/dogukan/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/15e39afd42d873b1316d0d3a82987b0f/res/values-h720dp-v13/values-h720dp-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
