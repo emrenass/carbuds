@@ -1,5 +1,11 @@
 TO be added at the desired packages
+
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+P R O F I L E  P I C T U R E +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
 HOW TO USE: 
   
 At your UI(Main) thread ;
@@ -47,3 +53,15 @@ Send the tokenized session id to otherwise stop unwanted requests taxing the ima
 
 
 
+///////////////////////////////////////////////////////////////////////////////////////////
+
+SET PROFILE PICTURE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+HOW TO USE: 
+  
+At your UI(Main) thread ;
+
+PFPSetActivity setActivity = new PFPSetActivity( int user_id, int session_id, Bitmap bmp, AppCOmpatActivity watcher);
+setActivity.execute();
