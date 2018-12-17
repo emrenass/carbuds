@@ -232,7 +232,8 @@ def like_match():
 
 @route_matchmaking.route('/get_matches', methods=['POST'])
 def get_matches():
-    user_id = request.json['user_id']
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
 
     query = """SELECT *
                 FROM match_pool
