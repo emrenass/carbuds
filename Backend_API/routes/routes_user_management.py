@@ -6,6 +6,7 @@ import jwt
 
 route_user_management = Blueprint('route_user_management', __name__)
 
+
 @route_user_management.route('/check_hitchhiker_profile', methods=['POST'])
 @login_required
 def check_hitchhiker_profile():
@@ -24,6 +25,7 @@ def check_hitchhiker_profile():
     if rows:
         return jsonify(True)
     return jsonify(False)
+
 
 @route_user_management.route('/check_driver_profile', methods=['POST'])
 @login_required
@@ -44,6 +46,7 @@ def check_driver_profile():
         return jsonify(True)
     return jsonify(False)
 
+
 @route_user_management.route('/login', methods=['POST'])
 def login():
     username = request.json['username']
@@ -56,9 +59,9 @@ def login():
 
     if result:
         message = {
-                  "username": username,
-                  "user_id": result[0]["id"]
-            }
+            "username": username,
+            "user_id": result[0]["id"]
+        }
 
         return jsonify({"user_id": result[0]["id"],
                         "token": jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256').decode("UTF-8")})
@@ -84,7 +87,7 @@ def signup():
 
     query = """INSERT INTO Users (name, lastname, username, password, email, gender, device_reg_id)
                 VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')""" \
-                % (name, surname, username, password, email, gender, device_reg_id)
+            % (name, surname, username, password, email, gender, device_reg_id)
 
     conn = db_connection()
 
@@ -111,9 +114,9 @@ def initial_role_selection():
 
 
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
-@login_required
+#@login_required
 def initial_driver_profile_setup():
-    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    #token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     passenger_seats = request.json['passenger_seats']
@@ -121,7 +124,13 @@ def initial_driver_profile_setup():
     car_license_plate = request.json['license_plate']
     brand = request.json['car_brand']
     model = request.json['car_model']
-    user_id = token['user_id']
+    user_id = request.json['user_id']
+
+    gender_dict = {
+        "Female": '{Female}',
+        "Male": '{Male}',
+        "Both": '{Female, Male}'
+    }
 
     query_brand = """SELECT cm.id 
                       FROM car_brand cb 
@@ -138,7 +147,7 @@ def initial_driver_profile_setup():
         return jsonify(e)
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_preference, passenger_seat, license_plate)
                 VALUES (%s, %s, '%s', '%s', %s, '%s') """ % (
-        user_id, model_id, gender_pref, music_pref, passenger_seats, car_license_plate)
+        user_id, model_id, gender_dict[gender_pref], music_pref, passenger_seats, car_license_plate)
     query_update = """UPDATE users 
                         SET current_profile='Driver' 
                         WHERE id=%s""" % user_id
@@ -235,7 +244,6 @@ def update_hitchhiker_profile():
     return jsonify(True)
 
 
-
 @route_user_management.route('/switch_profile', methods=['GET', 'POST'])
 @login_required
 def switch_profile():
@@ -259,39 +267,3 @@ def switch_profile():
     except Exception as e:
         print(e)
         return jsonify(e)
-
-@route_user_management.route('/check_hitchhiker_profile', methods=['POST'])
-def check_hitchhiker_profile():
-    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
-    user_id = token['user_id']
-
-    query = """SELECT *
-                FROM hitchhiker_profile
-                WHERE user_id = %s """ % user_id
-    try:
-        conn = db_connection()
-        rows = execute_query(query, conn)
-    except Exception as e:
-        print(e)
-        return "Database Error"
-    if rows:
-        return jsonify(True)
-    return jsonify(False)
-
-@route_user_management.route('/check_driver_profile', methods=['POST'])
-def check_driver_profile():
-    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
-    user_id = token['user_id']
-
-    query = """SELECT *
-                FROM driver_profile
-                WHERE user_id = %s """ % user_id
-    try:
-        conn = db_connection()
-        rows = execute_query(query, conn)
-    except Exception as e:
-        print(e)
-        return "Database Error"
-    if rows:
-        return jsonify(True)
-    return jsonify(False)

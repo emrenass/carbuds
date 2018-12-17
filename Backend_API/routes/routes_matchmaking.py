@@ -230,6 +230,23 @@ def like_match():
     return jsonify(True)
 
 
+@route_matchmaking.route('/get_matches', methods=['POST'])
+def get_matches():
+    user_id = request.json['user_id']
+
+    query = """SELECT *
+                FROM match_pool
+                WHERE hitchhiker_id = %s OR driver_id = %s""" % (user_id, user_id)
+    try:
+        conn = db_connection()
+        match_result = execute_query(query, conn)
+    except Exception as e:
+        print(e)
+        return "Database Error"
+
+    return jsonify(match_result)
+
+
 @route_matchmaking.route('/remove_match', methods=['POST'])
 @login_required
 def remove_match():
