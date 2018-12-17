@@ -55,7 +55,7 @@ public class MatchmakingActivity extends AppCompatActivity {
 
 
     private void sendRoute(){
-        Route route = RouteManager.getRoute();
+        Trip trip = RouteManager.getTrip();
         JSONObject jsonObj = new JSONObject();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -65,10 +65,10 @@ public class MatchmakingActivity extends AppCompatActivity {
         try {
             jsonObj.put("token", LoginActivity.token );
             jsonObj.put("user_id", "2"); // get id
-            jsonObj.put("trip_start_point", RouteManager.getPointString(route.getStartPoint()));
-            jsonObj.put("trip_end_point", RouteManager.getPointString(route.getEndPoint()));
+            jsonObj.put("trip_start_point", RouteManager.getPointString(trip.getStartPoint()));
+            jsonObj.put("trip_end_point", RouteManager.getPointString(trip.getEndPoint()));
             jsonObj.put("trip_start_time", formatter.format(date));
-            if(route.getUserType() == RouteManager.DRIVER) {
+            if(trip.getUserType() == RouteManager.DRIVER) {
                 jsonObj.put("available_seat", "2");
                 connection.setConnection(Connection.SET_TRIP_DRIVER, jsonObj);
                 connection.getResponseMessage();

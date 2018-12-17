@@ -1185,6 +1185,8 @@ id coordinator
 id custom
 id customPanel
 id dark
+id datePickerButton
+id dateTextView
 id decor_content_parent
 id default_activity_button
 id design_bottom_sheet
@@ -1270,6 +1272,7 @@ id parent_matrix
 id password
 id passwordRe
 id percent
+id pickFinishButton
 id pin
 id place_autocomplete_clear_button
 id place_autocomplete_powered_by_google
@@ -1352,6 +1355,7 @@ id textinput_counter
 id textinput_error
 id textinput_helper_text
 id time
+id timePickerButton
 id title
 id titleDividerNoCustom
 id title_template
@@ -1423,6 +1427,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_date_picker
 layout activity_login
 layout activity_main
 layout activity_matchmaking
