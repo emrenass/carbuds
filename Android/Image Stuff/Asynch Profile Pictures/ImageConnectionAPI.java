@@ -1,8 +1,4 @@
-/*
-
-ADDD   YOUR PACKAGE HERE
-
-*/
+package com.example.magus.bitmapconverter;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,7 +17,9 @@ public class ImageConnectionAPI extends AsyncTask< String, String, InputStream> 
 
     ProfilePicture pfp;
     public ImageConnectionAPI( ProfilePicture pfp) {
+        //set default image at display
         this.pfp = pfp;
+
     }
 
     @Override
@@ -37,26 +35,41 @@ public class ImageConnectionAPI extends AsyncTask< String, String, InputStream> 
         try {
              jsonObj= new JSONObject(data);
         } catch (JSONException e) {
-            Log.e("Bitmap", "Invalid Json");
+            Log.e("Bitmap", "Profile Picture Invalid Json");
             e.printStackTrace();
         }
+
+
         try {
+
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept", "*/*");
+            urlConnection.setConnectTimeout(2000);
             urlConnection.setDoOutput(true);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
             writer.write(jsonObj.toString());
             writer.close();
             urlConnection.connect();
-            InputStream strm = urlConnection.getInputStream();
+            InputStream strm;
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode >= 200 && statusCode < 400) {
+                // Create an InputStream in order to extract the response object
+                strm = urlConnection.getInputStream();
+            }
+            else {
+                strm = urlConnection.getErrorStream();
+                Log.e("Bitmap", "Error stream");
+            }
+
             return strm;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
+
     }
 
     protected void onPostExecute(InputStream result) {

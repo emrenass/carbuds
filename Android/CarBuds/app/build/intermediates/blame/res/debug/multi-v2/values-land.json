@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/ali/cs492/carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
+            "outputFile": "/Users/dogukan/Bilkent/CS491/Carbuds/Android/CarBuds/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
             "map": [
                 {
-                    "source": "/root/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/af394c43f9044eedb28945c67ca482bb/res/values-land/values-land.xml",
+                    "source": "/Users/dogukan/.gradle/caches/transforms-1/files-1.1/appcompat-v7-28.0.0.aar/15e39afd42d873b1316d0d3a82987b0f/res/values-land/values-land.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/root/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/6251e7e56c2507dca10195e8a333c1dc/res/values-land/values-land.xml",
+                    "source": "/Users/dogukan/.gradle/caches/transforms-1/files-1.1/design-28.0.0.aar/1f6f2e7de265ecd5b69961d05ed36c15/res/values-land/values-land.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

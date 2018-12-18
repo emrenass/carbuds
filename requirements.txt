@@ -1,4 +1,5 @@
 pika
+pyfcm
 googlemaps
 cachetools==3.0.0
 certifi==2018.10.15
