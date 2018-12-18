@@ -64,6 +64,7 @@ def login():
         }
 
         return jsonify({"user_id": result[0]["id"],
+                        "name": result[0]["name"],
                         "token": jwt.encode(message, app.config['SECRET_KEY'], algorithm='HS256').decode("UTF-8")})
     else:
         return jsonify(False)
@@ -114,9 +115,9 @@ def initial_role_selection():
 
 
 @route_user_management.route('/initial_driver_profile_setup', methods=['POST'])
-#@login_required
+# @login_required
 def initial_driver_profile_setup():
-    #token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    # token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
     passenger_seats = request.json['passenger_seats']
@@ -146,7 +147,12 @@ def initial_driver_profile_setup():
         print(e)
         return jsonify(e)
     query = """INSERT INTO "driver_profile" (user_id, car_model, hitchhiker_gender_preference, music_preference, passenger_seat, license_plate)
-                VALUES (%s, %s, '%s', '%s', %s, '%s') """ % (
+                VALUES (%s, %s, '%s', '%s', %s, '%s')
+                ON CONFLICT (user_id) DO UPDATE SET hitchhiker_gender_preference = EXCLUDED.hitchhiker_gender_preference,
+                                                    music_preference = EXCLUDED.music_preference,
+                                                    car_model = EXCLUDED.car_model,
+                                                    passenger_seat = EXCLUDED.passenger_seat,
+                                                    license_plate = EXCLUDED.license_plate""" % (
         user_id, model_id, gender_dict[gender_pref], music_pref, passenger_seats, car_license_plate)
     query_update = """UPDATE users 
                         SET current_profile='Driver' 
@@ -165,15 +171,25 @@ def initial_driver_profile_setup():
 
 
 @route_user_management.route('/initial_hitchhiker_profile_setup', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def initial_hitchhiker_profile_setup():
     token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     user_id = token['user_id']
     gender_pref = request.json['gender_preference']
     music_pref = request.json['music_preference']
+
+    gender_dict = {
+        "Female": '{Female}',
+        "Male": '{Male}',
+        "Both": '{Female, Male}'
+    }
     # TODO: Check licence plate validity
-    query = """INSERT INTO "hitchhiker_profile" (user_id, driver_gender_preference, music_preference)
-                    VALUES (%s, '%s', '%s') """ % (user_id, gender_pref, music_pref)
+    query = """INSERT INTO Hitchhiker_profile (user_id, driver_gender_preference, music_preference)
+                VALUES ('%s', '%s', '%s')
+                ON CONFLICT (user_id) DO UPDATE SET driver_gender_preference = EXCLUDED.driver_gender_preference,
+                                                    music_preference = EXCLUDED.music_preference""" \
+            % (user_id, gender_dict[gender_pref], music_pref)
+
     query_update = """UPDATE users SET current_profile='Hitchhiker' WHERE id=%s""" % user_id
 
     conn = db_connection()
@@ -267,3 +283,45 @@ def switch_profile():
     except Exception as e:
         print(e)
         return jsonify(e)
+
+
+@route_user_management.route('/get_driver_profile', methods=['GET', 'POST'])
+@login_required
+def get_driver_profile():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+
+    conn = db_connection()
+    query = """SELECT * FROM driver_profile 
+                natural join car_model
+                natural join car_brand
+                natural join users
+                WHERE user_id = %s""" % user_id
+    try:
+        row = execute_query(query, conn)
+        conn = db_connection()
+
+        return jsonify(row[0])
+    except Exception as e:
+        print(e)
+        return jsonify(False)
+
+
+@route_user_management.route('/get_hitchhiker_profile', methods=['GET', 'POST'])
+@login_required
+def get_hitchhiker_profile():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+
+    conn = db_connection()
+    query = """SELECT * FROM hitchhiker_profile
+                natural join users
+                WHERE user_id = %s""" % user_id
+    try:
+        row = execute_query(query, conn)
+        conn = db_connection()
+
+        return jsonify(row[0])
+    except Exception as e:
+        print(e)
+        return jsonify(False)

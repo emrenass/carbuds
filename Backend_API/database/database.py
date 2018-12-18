@@ -48,7 +48,7 @@ def create_table():
             """
 
     Driver_profile = """CREATE TABLE Driver_profile (
-                        user_id int,
+                        user_id int UNIQUE,
                         car_model int,
                         license_plate VARCHAR(9),
                         hitchhiker_gender_preference gender[],
@@ -60,7 +60,7 @@ def create_table():
                     """
 
     Hitchhiker_profile = """CREATE TABLE Hitchhiker_profile (
-                            user_id int,
+                            user_id int UNIQUE,
                             driver_gender_preference gender[],
                             music_preference music[],
                             CONSTRAINT Hitchhiker_profile_User_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
