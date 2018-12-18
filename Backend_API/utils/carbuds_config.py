@@ -27,6 +27,8 @@ class FlaskProductionConfig(FlaskConfig):
     DB_USERNAME = database_config.DB_USERNAME
     DB_PASS = database_config.DB_PASS
 
+    STATIC_FILE = "static"
+
     HOST = '0.0.0.0'
     PORT = '5090'
 
@@ -50,6 +52,8 @@ class FlaskDevelopmentConfig(FlaskConfig):
     DB_NAME = database_config.DB_NAME
     DB_USERNAME = database_config.DB_USERNAME
     DB_PASS = database_config.DB_PASS
+
+    STATIC_FILE = "static"
 
     HOST = 'localhost'
     PORT = '5090'
