@@ -1,8 +1,4 @@
-/*
-
-ADDD   YOUR PACKAGE HERE
-
-*/
+package com.example.magus.bitmapconverter;
 
 import android.os.AsyncTask;
 import android.widget.ImageView;
@@ -10,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,7 +49,7 @@ public class ProfilePicture {
 
         jsonRequestData = "{\"user_id\":" + ((Integer)owner_id).toString() + ",\"target_id\":" + ((Integer)target_id).toString()
                 + ",\"session_id\":" + ((Integer)session_id).toString() + "}";
-        
+
         loadDefaultPfp();
         connection = new ImageConnectionAPI( this);
         connection.execute( imageServerUrl, jsonRequestData);
@@ -90,27 +87,33 @@ public class ProfilePicture {
     public void synch(){
         if(connection.getStatus() == AsyncTask.Status.FINISHED)
         {
+            Log.w("Bitmap","REexecuting");
+            connection = new ImageConnectionAPI( this);
             connection.execute( imageServerUrl, jsonRequestData);
         }
+
     }
 
     public void interpretBitmapStringResponse( InputStream strm){
-        byte[] bytes = new byte[0];
-        try {
-            String result64= IOUtils.toString(strm, "ISO-8859-1");
-            bytes = Base64.getDecoder().decode(result64.getBytes());
 
+        byte[] bytes = new byte[0];
+
+        StringWriter writer = new StringWriter();
+        try {
+            IOUtils.copy(strm, writer, "ISO-8859-1");
         } catch (IOException e) {
-            Log.w("Bitmap","Profile Picture cant decode the base64 string");
-            try {
-                strm.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            return;
+            e.printStackTrace();
         }
+        String theString = writer.toString();
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bytes = Base64.getDecoder().decode(theString.getBytes());
 
         Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
 
         if(bmp == null){
             Log.w("Bitmap","Profile Picture cant create a Bitmap from the base64 string");
