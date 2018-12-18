@@ -18,7 +18,7 @@ def get_user_image():
     static = app.config['STATIC_FILE'] + "/"
     if (os.path.isdir(static + user_id)):
         image = os.listdir(static + user_id)
-        return app.send_static_file("{0}/{1}".format(user_id, image))
+        return app.send_static_file("{0}/{1}".format(user_id, image[0]))
     else:
         return app.send_static_file("default/default.jpg")
 
