@@ -20,7 +20,7 @@ def get_user_image():
         image = os.listdir(static + user_id)
         return app.send_static_file("{0}/{1}".format(user_id, image[0]))
     else:
-        return app.send_static_file("default/default.jpg")
+        return app.send_static_file("default/default_profile_image.jpg")
 
 
 @route_images.route('/upload_user_image', methods=['POST'])
@@ -47,3 +47,4 @@ def upload_user_image():
             return jsonify(True)
         except Exception as e:
             return jsonify(False)
+
