@@ -14,7 +14,7 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
-# @login_required
+@login_required
 def set_trip_driver():
     token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     user_id = token['user_id']
@@ -116,6 +116,7 @@ def get_driver_candidate():
 
     query = """SELECT *
                 FROM possible_match_pool
+                INNER JOIN users on possible_match_pool.driver_id = users.id
                 WHERE hitchhiker_id = %s """ % user_id
     try:
         conn = db_connection()
@@ -136,6 +137,7 @@ def get_hitchhiker_candidate():
 
     query = """SELECT *
                     FROM possible_match_pool
+                    INNER JOIN users on possible_match_pool.hitchhiker_id = users.id
                     WHERE driver_id = %s """ % user_id
     try:
         conn = db_connection()
