@@ -325,3 +325,27 @@ def get_hitchhiker_profile():
     except Exception as e:
         print(e)
         return jsonify(False)
+
+
+
+@route_user_management.route('/get_music_preferences', methods=['GET', 'POST'])
+@login_required
+def get_music_preferences():
+    user_id = request.json['user_id']
+    user_type = request.json['user_type']
+    profile_type = ""
+    if user_type:
+        profile_type = "driver_profile"
+    else:
+        profile_type = "hitchhiker_profile"
+
+    conn = db_connection()
+    query = """SELECT music_preference FROM %s
+                WHERE user_id = %s""" % (profile_type, user_id)
+    try:
+        row = execute_query(query, conn)
+        conn = db_connection()
+        return jsonify(row[0])
+    except Exception as e:
+        print(e)
+        return jsonify(False)
