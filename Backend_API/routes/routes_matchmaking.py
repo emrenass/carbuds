@@ -14,7 +14,7 @@ route_matchmaking = Blueprint('route_matchmaking', __name__)
 
 
 @route_matchmaking.route('/set_trip_driver', methods=['POST'])
-# @login_required
+@login_required
 def set_trip_driver():
     token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
     user_id = token['user_id']
@@ -51,7 +51,7 @@ def set_trip_driver():
         print(e)
         return "Database Error"
 
-    find_and_write_hitchhiker_candidates(user_id)
+    find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline)
 
     return jsonify(True)
 
@@ -93,7 +93,7 @@ def set_trip_hitchhiker():
     except Exception as e:
         print(e)
         return "Database Error"
-    find_and_write_driver_candidates(user_id)
+    find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline)
     return jsonify(True)
 
 
@@ -116,7 +116,9 @@ def get_driver_candidate():
 
     query = """SELECT *
                 FROM possible_match_pool
-                WHERE hitchhiker_id = %s """ % user_id
+                INNER JOIN users on possible_match_pool.driver_id = users.id
+                WHERE hitchhiker_id = %s 
+                LIMIT 10""" % user_id
     try:
         conn = db_connection()
         hitch_result = execute_query(query, conn)
@@ -136,7 +138,9 @@ def get_hitchhiker_candidate():
 
     query = """SELECT *
                     FROM possible_match_pool
-                    WHERE driver_id = %s """ % user_id
+                    INNER JOIN users on possible_match_pool.hitchhiker_id = users.id
+                    WHERE driver_id = %s 
+                    LIMIT 10""" % user_id
     try:
         conn = db_connection()
         hitch_result = execute_query(query, conn)
@@ -148,40 +152,40 @@ def get_hitchhiker_candidate():
     return jsonify(False)
 
 
-@route_matchmaking.route('/cancel_driver_trip', methods=['POST'])
+@route_matchmaking.route('/cancel_trip', methods=['POST'])
 @login_required
-def cancel_driver_trip():
-    trip_id = request.json['trip_id']
+def cancel_trip():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+    user_type = request.json['type']
 
-    query = """DELETE FROM driver_matchmaking_pool
-                WHERE id = %s """ % trip_id
+    delete_sequence = []
+    if user_type == 'driver':
+
+        query = """DELETE FROM driver_matchmaking_pool
+                    WHERE user_id = %s """ % user_id
+
+        query2 = """DELETE FROM possible_match_pool
+                            WHERE driver_id = %s """ % user_id
+        delete_sequence.append(query)
+        # delete_sequence.append(query2)
+    else:
+        query = """DELETE FROM hitchhiker_matchmaking_pool
+                            WHERE user_id = %s """ % user_id
+
+        query2 = """DELETE FROM possible_match_pool
+                                    WHERE hitchhiker_id = %s """ % user_id
+        delete_sequence.append(query)
+        # delete_sequence.append(query2)
+
     try:
         conn = db_connection()
-        commit_query(query, conn)
+        commit_query_multiple(query, conn)
     except Exception as e:
         print(e)
         return "Database Error"
 
     return jsonify(True)
-
-
-@route_matchmaking.route('/cancel_hitchhiker_trip', methods=['POST'])
-@login_required
-def cancel_hitchhiker_trip():
-    trip_id = request.json['trip_id']
-
-    query = """DELETE 
-                FROM hitchhiker_matchmaking_pool
-                WHERE id = %s """ % trip_id
-    try:
-        conn = db_connection()
-        commit_query(query, conn)
-    except Exception as e:
-        print(e)
-        return "Database Error"
-
-    return jsonify(True)
-
 
 @route_matchmaking.route('/dislike_match', methods=['POST'])
 @login_required
@@ -260,167 +264,152 @@ def finish_match():
     pass
 
 
-def find_and_write_driver_candidates(user_id):
-    query = """SELECT destination_polyline, trip_start_time,
-                    ST_X(trip_start_point) lat_start, ST_Y(trip_start_point) lon_start,
-                    hitchhiker_profile.music_preference, hitchhiker_profile.driver_gender_preference
+@route_matchmaking.route('/check_active_trip', methods=['POST'])
+@login_required
+def check_active_trip():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
+    type = request.json['type']
+
+    if type == "driver":
+        query = """SELECT *
+                    FROM driver_matchmaking_pool
+                    WHERE user_id = %s""" % user_id
+    else:
+        query = """SELECT *
                     FROM hitchhiker_matchmaking_pool
-                    INNER JOIN hitchhiker_profile
-                    ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
-                    WHERE hitchhiker_matchmaking_pool.user_id = %s """ % user_id
+                    WHERE user_id = %s""" % user_id
     try:
         conn = db_connection()
-        hitch_result = execute_query(query, conn)
+        result = execute_query(query, conn)
     except Exception as e:
         print(e)
         return "Database Error"
-
-    for trip in hitch_result:
-        try:
-            start_lat = trip['lat_start']
-            start_lon = trip['lon_start']
-            music_pref = trip['music_preference']
-            gender_pref = trip['driver_gender_preference']
-            trip_start_time = trip['trip_start_time']
-            hitchhiker_route_polyline = trip['destination_polyline']
-        except Exception as e:
-            print(e)
-            return "User Does Not Exist"
-
-        query = """SELECT * 
-                        FROM driver_matchmaking_pool
-                        INNER JOIN driver_profile
-                        ON driver_matchmaking_pool.user_id = driver_profile.user_id
-                        WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
-                                '%s' && driver_profile.music_preference AND 
-                                ((SELECT gender from users where id=%s) || ARRAY[]::gender[]) && driver_profile.hitchhiker_gender_preference AND
-                                driver_matchmaking_pool.trip_start_time <= (timestamp '%s' + interval '1 hours')""" \
-                % (float(start_lat), float(start_lon),
-                   music_pref, user_id, trip_start_time)
-
-        try:
-            conn = db_connection()
-            driver_result = execute_query(query, conn)
-        except Exception as e:
-            print(e)
-            return "Database Error"
-
-        try:
-            gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
-            for candidate in driver_result:
-                driver_polyline = candidate['destination_polyline']
-                intersection_polyline = check_polylines_intersections(driver_polyline, hitchhiker_route_polyline)
-
-                if not intersection_polyline:
-                    continue
-
-                inter_start_lat, inter_start_lon = intersection_polyline[0]
-                inter_end_lat, inter_end_lon = intersection_polyline[-1]
-
-                distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
-                                                        "%s, %s" % (inter_end_lat, inter_end_lon),
-                                                        mode="transit",
-                                                        units='metric',
-                                                        departure_time=datetime.now())
-
-                intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
-
-                if intersection_distance >= 1000:
-                    candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
-                    candidate['intersection_distance'] = intersection_distance
-                    query = """INSERT INTO possible_match_pool 
-                                    (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
-                                    VALUES ('%s', '%s', '%s', '%s')""" \
-                            % (candidate['intersection_polyline'], user_id, candidate['user_id'], trip_start_time)
-
-                    try:
-                        conn = db_connection()
-                        commit_query(query, conn)
-                    except Exception as e:
-                        print(e)
-                        return "Database Error"
-        except Exception as e:
-            print(e)
-            return "Google Maps API Error"
+    if result:
+        return jsonify(result[0])
+    else:
+        return jsonify(False)
 
 
-def find_and_write_hitchhiker_candidates(user_id):
-    query = """SELECT destination_polyline, trip_start_time,
-                        ST_X(trip_start_point) lat_start, ST_Y(trip_start_point) lon_start,
-                        driver_profile.music_preference, driver_profile.hitchhiker_gender_preference
-                        FROM driver_matchmaking_pool
-                        INNER JOIN driver_profile
-                        ON driver_matchmaking_pool.user_id = driver_profile.user_id
-                        WHERE driver_matchmaking_pool.user_id = %s """ % user_id
+def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline):
+
+    query = """SELECT * 
+                    FROM driver_matchmaking_pool
+                    INNER JOIN driver_profile
+                    ON driver_matchmaking_pool.user_id = driver_profile.user_id
+                    WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                    (SELECT music_preference 
+                        from hitchhiker_profile 
+                        where hitchhiker_profile.user_id = '%s') && driver_profile.music_preference AND 
+                    ((SELECT gender 
+                        from users 
+                        where id=%s) || ARRAY[]::gender[]) && driver_profile.hitchhiker_gender_preference AND
+                    driver_matchmaking_pool.trip_start_time <= (timestamp '%s' + interval '1 hours')""" \
+            % (float(start_lat), float(start_lon),
+               user_id, user_id, trip_start_time)
 
     try:
         conn = db_connection()
         driver_result = execute_query(query, conn)
+    except Exception as e:
+        print(e)
+        return "Database Error"
+
+    try:
+        gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
+        for candidate in driver_result:
+            driver_polyline = candidate['destination_polyline']
+            intersection_polyline = check_polylines_intersections(driver_polyline, route_polyline)
+
+            if not intersection_polyline:
+                continue
+
+            inter_start_lat, inter_start_lon = intersection_polyline[0]
+            inter_end_lat, inter_end_lon = intersection_polyline[-1]
+
+            distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
+                                                    "%s, %s" % (inter_end_lat, inter_end_lon),
+                                                    mode="transit",
+                                                    units='metric',
+                                                    departure_time=datetime.now())
+
+            intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
+
+            if intersection_distance >= 1000:
+                candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
+                candidate['intersection_distance'] = intersection_distance
+                query = """INSERT INTO possible_match_pool 
+                                (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
+                                VALUES ('%s', '%s', '%s', '%s')""" \
+                        % (candidate['intersection_polyline'], user_id, candidate['user_id'], trip_start_time)
+
+                try:
+                    conn = db_connection()
+                    commit_query(query, conn)
+                except Exception as e:
+                    print(e)
+                    return "Database Error"
+    except Exception as e:
+        print(e)
+        return "Google Maps API Error"
+
+
+def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_start_time, driver_polyline):
+
+    query = """SELECT * 
+                FROM hitchhiker_matchmaking_pool
+                INNER JOIN hitchhiker_profile
+                ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
+                WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                (SELECT music_preference 
+                    from driver_profile 
+                    where Driver_profile.user_id = '%s') && hitchhiker_profile.music_preference AND 
+                ((SELECT gender 
+                    from users 
+                    where id=%s) || ARRAY[]::gender[]) && hitchhiker_profile.driver_gender_preference """ \
+            % (float(start_lat), float(start_lon),
+               user_id, user_id)
+
+    try:
+        conn = db_connection()
+        hitch_result = execute_query(query, conn)
     except:
         return "Database Error"
 
-    for trip in driver_result:
-        try:
-            start_lat = trip['lat_start']
-            start_lon = trip['lon_start']
-            music_pref = trip['music_preference']
-            gender_pref = trip['hitchhiker_gender_preference']
-            trip_start_time = trip['trip_start_time']
-            hitchhiker_route_polyline = trip['destination_polyline']
-        except Exception as e:
-            print(e)
-            return "User Does Not Exist"
+    try:
+        gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
+        for candidate in hitch_result:
+            hitchhiker_polyline = candidate['destination_polyline']
+            intersection_polyline = check_polylines_intersections(driver_polyline, hitchhiker_polyline)
 
-        query = """SELECT * 
-                            FROM hitchhiker_matchmaking_pool
-                            INNER JOIN hitchhiker_profile
-                            ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
-                            WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
-                            '%s' && hitchhiker_profile.music_preference AND 
-                            ((SELECT gender from users where id=%s) || ARRAY[]::gender[]) && hitchhiker_profile.driver_gender_preference """ \
-                % (float(start_lat), float(start_lon),
-                   music_pref, user_id)
+            if not intersection_polyline:
+                continue
 
-        try:
-            conn = db_connection()
-            hitch_result = execute_query(query, conn)
-        except:
-            return "Database Error"
+            inter_start_lat, inter_start_lon = intersection_polyline[0]
+            inter_end_lat, inter_end_lon = intersection_polyline[-1]
 
-        try:
-            gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
-            for candidate in hitch_result:
-                driver_polyline = candidate['destination_polyline']
-                intersection_polyline = check_polylines_intersections(driver_polyline, hitchhiker_route_polyline)
+            distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
+                                                    "%s, %s" % (inter_end_lat, inter_end_lon),
+                                                    mode="transit",
+                                                    units='metric',
+                                                    departure_time=datetime.now())
 
-                if not intersection_polyline:
-                    continue
+            intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
 
-                inter_start_lat, inter_start_lon = intersection_polyline[0]
-                inter_end_lat, inter_end_lon = intersection_polyline[-1]
+            if intersection_distance >= 1000:
+                candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
+                candidate['intersection_distance'] = intersection_distance
+                query = """INSERT INTO possible_match_pool 
+                                (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
+                                VALUES ('%s', '%s', '%s', '%s')""" \
+                        % (candidate['intersection_polyline'], candidate['user_id'], user_id, trip_start_time)
 
-                distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
-                                                        "%s, %s" % (inter_end_lat, inter_end_lon),
-                                                        mode="transit",
-                                                        units='metric',
-                                                        departure_time=datetime.now())
-
-                intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
-
-                if intersection_distance >= 1000:
-                    candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
-                    candidate['intersection_distance'] = intersection_distance
-                    query = """INSERT INTO possible_match_pool 
-                                    (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
-                                    VALUES ('%s', '%s', '%s', '%s')""" \
-                            % (candidate['intersection_polyline'], candidate['user_id'], user_id, trip_start_time)
-
-                    try:
-                        conn = db_connection()
-                        commit_query(query, conn)
-                    except Exception as e:
-                        print(e)
-                        return "Database Error"
-        except Exception as e:
-            print(e)
-            return "Google Maps API Error"
+                try:
+                    conn = db_connection()
+                    commit_query(query, conn)
+                except Exception as e:
+                    print(e)
+                    return "Database Error"
+    except Exception as e:
+        print(e)
+        return "Google Maps API Error"

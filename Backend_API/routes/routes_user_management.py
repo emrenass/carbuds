@@ -296,13 +296,12 @@ def get_driver_profile():
 
     conn = db_connection()
     query = """SELECT * FROM driver_profile 
-                natural join car_model
-                natural join car_brand
-                natural join users
+                NATURAL JOIN car_model
+                NATURAL JOIN car_brand
+                INNER JOIN  users on Driver_profile.user_id = users.id
                 WHERE user_id = %s""" % user_id
     try:
         row = execute_query(query, conn)
-        conn = db_connection()
 
         return jsonify(row[0])
     except Exception as e:
@@ -318,11 +317,10 @@ def get_hitchhiker_profile():
 
     conn = db_connection()
     query = """SELECT * FROM hitchhiker_profile
-                natural join users
+                INNER JOIN users on users.id = Hitchhiker_profile.user_id
                 WHERE user_id = %s""" % user_id
     try:
         row = execute_query(query, conn)
-        conn = db_connection()
 
         return jsonify(row[0])
     except Exception as e:
