@@ -86,6 +86,9 @@ def signup():
     gender = request.json['gender']
     device_reg_id = request.json['device_reg_id']
 
+    if not str(email).endswith("bilkent.edu.tr"):
+        return jsonify("not bilkent")
+
     query = """INSERT INTO Users (name, lastname, username, password, email, gender, device_reg_id)
                 VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')""" \
             % (name, surname, username, password, email, gender, device_reg_id)

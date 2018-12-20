@@ -38,7 +38,7 @@ def create_table():
                 name VARCHAR(50),
                 lastname VARCHAR(50),
                 username VARCHAR(30) UNIQUE ,
-                password VARCHAR(50),
+                password TEXT,
                 registration_date timestamp not null default CURRENT_TIMESTAMP,
                 email VARCHAR(100) UNIQUE,
                 gender gender,
