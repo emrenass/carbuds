@@ -25,6 +25,7 @@ animator mtrl_fab_hide_motion_spec
 animator mtrl_fab_show_motion_spec
 animator mtrl_fab_transformation_sheet_collapse_spec
 animator mtrl_fab_transformation_sheet_expand_spec
+array car_model_entries
 array list_preference_entries
 array list_preference_entry_values
 array multi_select_list_preference_default_value
@@ -145,10 +146,12 @@ attr checkedIcon
 attr checkedIconEnabled
 attr checkedIconVisible
 attr checkedTextViewStyle
+attr chipBackground
 attr chipBackgroundColor
 attr chipCornerRadius
 attr chipEndPadding
 attr chipGroupStyle
+attr chipHeight
 attr chipIcon
 attr chipIconEnabled
 attr chipIconSize
@@ -163,7 +166,14 @@ attr chipStartPadding
 attr chipStrokeColor
 attr chipStrokeWidth
 attr chipStyle
+attr chipTextColor
+attr chipTextSize
+attr chipVerticalSpacing
 attr circleCrop
+attr civ_border_color
+attr civ_border_overlay
+attr civ_border_width
+attr civ_fill_color
 attr closeIcon
 attr closeIconEnabled
 attr closeIconEndPadding
@@ -641,6 +651,9 @@ color cardview_dark_background
 color cardview_light_background
 color cardview_shadow_end_color
 color cardview_shadow_start_color
+color chip_default_icon_background_color
+color chip_default_text_color
+color chip_material_background
 color colorAccent
 color colorPrimary
 color colorPrimaryDark
@@ -719,12 +732,6 @@ color mtrl_textinput_hovered_box_stroke_color
 color notification_action_color_filter
 color notification_icon_bg_color
 color notification_material_background_media_default_color
-color place_autocomplete_prediction_primary_text
-color place_autocomplete_prediction_primary_text_highlight
-color place_autocomplete_prediction_secondary_text
-color place_autocomplete_search_hint
-color place_autocomplete_search_text
-color place_autocomplete_separator
 color primary_dark_material_dark
 color primary_dark_material_light
 color primary_material_dark
@@ -827,6 +834,10 @@ dimen activity_vertical_margin
 dimen cardview_compat_inset_shadow
 dimen cardview_default_elevation
 dimen cardview_default_radius
+dimen chip_default_left_margin
+dimen chip_default_padding_between_image
+dimen chip_default_padding_edge
+dimen chip_default_right_margin
 dimen compat_button_inset_horizontal_material
 dimen compat_button_inset_vertical_material
 dimen compat_button_padding_horizontal_material
@@ -880,6 +891,7 @@ dimen design_tab_text_size_2line
 dimen design_textinput_caption_translate_y
 dimen disabled_alpha_material_dark
 dimen disabled_alpha_material_light
+dimen fab_margin
 dimen fastscroll_default_thickness
 dimen fastscroll_margin
 dimen fastscroll_minimum_range
@@ -956,16 +968,6 @@ dimen notification_small_icon_size_as_large
 dimen notification_subtext_size
 dimen notification_top_pad
 dimen notification_top_pad_large_text
-dimen place_autocomplete_button_padding
-dimen place_autocomplete_powered_by_google_height
-dimen place_autocomplete_powered_by_google_start
-dimen place_autocomplete_prediction_height
-dimen place_autocomplete_prediction_horizontal_margin
-dimen place_autocomplete_prediction_primary_text
-dimen place_autocomplete_prediction_secondary_text
-dimen place_autocomplete_progress_horizontal_margin
-dimen place_autocomplete_progress_size
-dimen place_autocomplete_separator_start
 dimen subtitle_corner_radius
 dimen subtitle_outline_width
 dimen subtitle_shadow_offset
@@ -1064,8 +1066,6 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
-drawable bubble_mask
-drawable bubble_shadow
 drawable common_full_open_on_phone
 drawable common_google_signin_btn_icon_dark
 drawable common_google_signin_btn_icon_dark_focused
@@ -1105,8 +1105,10 @@ drawable ic_sync_black_24dp
 drawable image_green
 drawable image_uzun
 drawable image_yellow
+drawable man
 drawable mtrl_snackbar_background
 drawable mtrl_tabs_default_indicator
+drawable nav_menu_header_bg
 drawable navigation_empty_icon
 drawable notification_action_background
 drawable notification_bg
@@ -1120,10 +1122,6 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
-drawable places_ic_clear
-drawable places_ic_search
-drawable powered_by_google_dark
-drawable powered_by_google_light
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
 drawable uzun
@@ -1166,9 +1164,14 @@ id barrier
 id beginning
 id blocking
 id bottom
+id button
 id buttonPanel
 id cancel_action
 id carOwnerButton
+id car_brand
+id car_brand_spinner
+id car_model
+id car_model_spinner
 id center
 id center_horizontal
 id center_vertical
@@ -1185,8 +1188,6 @@ id coordinator
 id custom
 id customPanel
 id dark
-id datePickerButton
-id dateTextView
 id decor_content_parent
 id default_activity_button
 id design_bottom_sheet
@@ -1215,11 +1216,15 @@ id fill_vertical
 id filled
 id fixed
 id forever
+id formView
 id gender
+id gender_preference
+id gender_preference_spinner
 id ghost_view
 id gone
 id group_divider
 id groups
+id header_cover_image
 id hitchhikerButton
 id home
 id homeAsUp
@@ -1231,12 +1236,16 @@ id ifRoom
 id image
 id imageView
 id info
+id initial_driver_progress
 id invisible
 id italic
 id item_touch_helper_previous_elevation
 id labeled
 id largeLabel
+id layout
 id left
+id license_plate
+id license_plate_field
 id light
 id line1
 id line3
@@ -1254,6 +1263,8 @@ id mini
 id mtrl_child_content_container
 id mtrl_internal_children_alpha_tag
 id multiply
+id music_preference
+id music_preference_spinner
 id name
 id navigation_header_container
 id never
@@ -1269,19 +1280,14 @@ id parallax
 id parent
 id parentPanel
 id parent_matrix
+id passenger_seat
+id passenger_seat_spinner
 id password
 id passwordRe
 id percent
-id pickFinishButton
 id pin
-id place_autocomplete_clear_button
-id place_autocomplete_powered_by_google
-id place_autocomplete_prediction_primary_text
-id place_autocomplete_prediction_secondary_text
-id place_autocomplete_progress
-id place_autocomplete_search_button
-id place_autocomplete_search_input
-id place_autocomplete_separator
+id profile
+id profile_layout
 id progress_circular
 id progress_horizontal
 id radio
@@ -1355,7 +1361,6 @@ id textinput_counter
 id textinput_error
 id textinput_helper_text
 id time
-id timePickerButton
 id title
 id titleDividerNoCustom
 id title_template
@@ -1427,13 +1432,15 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
-layout activity_date_picker
+layout activity_initial_driver_profile
+layout activity_initial_hitchhiker_profile
 layout activity_login
 layout activity_main
 layout activity_matchmaking
 layout activity_register
 layout activity_selection
 layout activity_type_selection
+layout content_initial_driver_profile
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
 layout design_layout_snackbar
@@ -1465,15 +1472,10 @@ layout notification_template_media
 layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
-layout place_autocomplete_fragment
-layout place_autocomplete_item_powered_by_google
-layout place_autocomplete_item_prediction
-layout place_autocomplete_progress
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
-layout text_bubble
 mipmap ic_launcher
 mipmap ic_launcher_round
 string abc_action_bar_home_description
@@ -1529,6 +1531,7 @@ string btn_subscribe_news
 string btn_unsubscribe_news
 string character_counter_content_description
 string character_counter_pattern
+string chip_ellipsis
 string common_google_play_services_enable_button
 string common_google_play_services_enable_text
 string common_google_play_services_enable_title
@@ -1573,8 +1576,6 @@ string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
 string permission_rationale
-string place_autocomplete_clear_button
-string place_autocomplete_search_hint
 string pref_default_display_name
 string pref_description_social_recommendations
 string pref_header_data_sync
@@ -1603,6 +1604,7 @@ string start_selection_finished
 string status_bar_notification_info_overflow
 string subscribed
 string target_selection_finished
+string title_activity_initial_driver_profile
 string title_activity_login
 string title_activity_maps
 string title_activity_register
@@ -1618,6 +1620,9 @@ style Animation_AppCompat_DropDownUp
 style Animation_AppCompat_Tooltip
 style Animation_Design_BottomSheetDialog
 style AppTheme
+style AppTheme_AppBarOverlay
+style AppTheme_NoActionBar
+style AppTheme_PopupOverlay
 style Base_AlertDialog_AppCompat
 style Base_AlertDialog_AppCompat_Light
 style Base_Animation_AppCompat_Dialog
@@ -1806,12 +1811,10 @@ style Base_Widget_Design_TabLayout
 style Base_Widget_MaterialComponents_Chip
 style Base_Widget_MaterialComponents_TextInputEditText
 style Base_Widget_MaterialComponents_TextInputLayout
-style Bubble_TextAppearance_Dark
-style Bubble_TextAppearance_Light
 style CardView
 style CardView_Dark
 style CardView_Light
-style ClusterIcon_TextAppearance
+style DefaultChipSuggestionTextView
 style Platform_AppCompat
 style Platform_AppCompat_Light
 style Platform_MaterialComponents
@@ -2140,6 +2143,7 @@ styleable ButtonBarLayout allowStacking
 styleable CardView android_minWidth android_minHeight cardBackgroundColor cardCornerRadius cardElevation cardMaxElevation cardPreventCornerOverlap cardUseCompatPadding contentPadding contentPaddingBottom contentPaddingLeft contentPaddingRight contentPaddingTop
 styleable Chip android_textAppearance android_ellipsize android_maxWidth android_text android_checkable checkedIcon checkedIconEnabled checkedIconVisible chipBackgroundColor chipCornerRadius chipEndPadding chipIcon chipIconEnabled chipIconSize chipIconTint chipIconVisible chipMinHeight chipStartPadding chipStrokeColor chipStrokeWidth closeIcon closeIconEnabled closeIconEndPadding closeIconSize closeIconStartPadding closeIconTint closeIconVisible hideMotionSpec iconEndPadding iconStartPadding rippleColor showMotionSpec textEndPadding textStartPadding
 styleable ChipGroup checkedChip chipSpacing chipSpacingHorizontal chipSpacingVertical singleLine singleSelection
+styleable CircleImageView civ_border_color civ_border_overlay civ_border_width civ_fill_color
 styleable CollapsingToolbarLayout collapsedTitleGravity collapsedTitleTextAppearance contentScrim expandedTitleGravity expandedTitleMargin expandedTitleMarginBottom expandedTitleMarginEnd expandedTitleMarginStart expandedTitleMarginTop expandedTitleTextAppearance scrimAnimationDuration scrimVisibleHeightTrigger statusBarScrim title titleEnabled toolbarId
 styleable CollapsingToolbarLayout_Layout layout_collapseMode layout_collapseParallaxMultiplier
 styleable ColorStateListItem android_color android_alpha alpha
@@ -2171,6 +2175,7 @@ styleable MaterialComponentsTheme bottomSheetDialogTheme bottomSheetStyle chipGr
 styleable MenuGroup android_enabled android_id android_visible android_menuCategory android_orderInCategory android_checkableBehavior
 styleable MenuItem android_icon android_enabled android_id android_checked android_visible android_menuCategory android_orderInCategory android_title android_titleCondensed android_alphabeticShortcut android_numericShortcut android_checkable android_onClick actionLayout actionProviderClass actionViewClass alphabeticModifiers contentDescription iconTint iconTintMode numericModifiers showAsAction tooltipText
 styleable MenuView android_windowAnimationStyle android_itemTextAppearance android_horizontalDivider android_verticalDivider android_headerBackground android_itemBackground android_itemIconDisabledAlpha preserveIconSpacing subMenuArrow
+styleable NachoTextView chipBackground chipHeight chipSpacing chipTextColor chipTextSize chipVerticalSpacing
 styleable NavigationView android_background android_fitsSystemWindows android_maxWidth elevation headerLayout itemBackground itemHorizontalPadding itemIconPadding itemIconTint itemTextAppearance itemTextColor menu
 styleable PopupWindow android_popupBackground android_popupAnimationStyle overlapAnchor
 styleable PopupWindowBackgroundState state_above_anchor

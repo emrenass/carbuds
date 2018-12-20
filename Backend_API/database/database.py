@@ -83,7 +83,7 @@ def create_table():
 
     Driver_matchmaking_pool = """CREATE TABLE Driver_matchmaking_pool (
                                     id SERIAL PRIMARY KEY,
-                                    user_id int,
+                                    user_id int UNIQUE ,
                                     available_seat int,
                                     trip_start_time timestamp,
                                     destination_polyline TEXT,
@@ -93,7 +93,7 @@ def create_table():
 
     Hitchhiker_matchmaking_pool = """CREATE TABLE Hitchhiker_matchmaking_pool (
                                        id SERIAL PRIMARY KEY,
-                                       user_id int,
+                                       user_id int UNIQUE ,
                                        trip_start_time timestamp,
                                        destination_polyline TEXT,
                                        CONSTRAINT Hitchhiker_matchmaking_pool_user_id_fk FOREIGN KEY (user_id) REFERENCES Users (id)
