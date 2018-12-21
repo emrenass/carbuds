@@ -27,7 +27,7 @@ def set_trip_driver():
 
     directions_result = gmaps.directions("%s, %s" % (start_lat, start_lon),
                                          "%s, %s" % (end_lat, end_lon),
-                                         mode="transit",
+                                         mode="driving",
                                          units='metric',
                                          departure_time=datetime.now())
 
@@ -69,7 +69,7 @@ def set_trip_hitchhiker():
 
     directions_result = gmaps.directions("%s, %s" % (start_lat, start_lon),
                                          "%s, %s" % (end_lat, end_lon),
-                                         mode="transit",
+                                         mode="driving",
                                          units='metric',
                                          departure_time=datetime.now())
 
@@ -338,7 +338,7 @@ def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_t
 
             distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
                                                     "%s, %s" % (inter_end_lat, inter_end_lon),
-                                                    mode="transit",
+                                                    mode="driving",
                                                     units='metric',
                                                     departure_time=datetime.now())
 
@@ -399,7 +399,7 @@ def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_sta
 
             distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
                                                     "%s, %s" % (inter_end_lat, inter_end_lon),
-                                                    mode="transit",
+                                                    mode="driving",
                                                     units='metric',
                                                     departure_time=datetime.now())
 
