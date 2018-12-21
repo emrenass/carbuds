@@ -51,9 +51,16 @@ def check_driver_profile():
 def login():
     username = request.json['username']
     password = request.json['password']
+    fcm_token = request.json['fcm_token']
+
+    fcm_query = """UPDATE Users 
+                    SET device_reg_id = '%s' 
+                    where username = '%s'""" % (fcm_token, username)
 
     query = """SELECT * FROM Users WHERE "username" = '%s' AND "password" = '%s'""" % (username, password)
 
+    conn = db_connection()
+    commit_query(fcm_query, conn)
     conn = db_connection()
     result = execute_query(query, conn)
 

@@ -163,3 +163,4 @@ def push_match_notification(device_reg_id=None):
 
 
 match_possible_trip()
+# push_match_notification('cYAYeJQosbo:APA91bEyFvhJml534sMe6eIPAZ2mVd6DR9Dw72GHBvzr9qWJkZbdcTwfYIEB34fvvqmOnpBt3Ud-8Be3oN-y_q14N39nBWfmhov984S1noIYpnqvLdeeQYVrkCOALLoCFFtMnuwAJ3hp')
