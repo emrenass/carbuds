@@ -117,7 +117,7 @@ def get_driver_candidate():
     query = """SELECT *
                 FROM possible_match_pool
                 INNER JOIN users on possible_match_pool.driver_id = users.id
-                WHERE hitchhiker_id = %s 
+                WHERE hitchhiker_id = %s and is_hitchhiker_like is null
                 LIMIT 10""" % user_id
     try:
         conn = db_connection()
@@ -139,7 +139,7 @@ def get_hitchhiker_candidate():
     query = """SELECT *
                     FROM possible_match_pool
                     INNER JOIN users on possible_match_pool.hitchhiker_id = users.id
-                    WHERE driver_id = %s 
+                    WHERE driver_id = %s and is_driver_liked is null 
                     LIMIT 10""" % user_id
     try:
         conn = db_connection()
@@ -180,7 +180,7 @@ def cancel_trip():
 
     try:
         conn = db_connection()
-        commit_query_multiple(query, conn)
+        commit_query_multiple(delete_sequence, conn)
     except Exception as e:
         print(e)
         return "Database Error"
@@ -190,11 +190,20 @@ def cancel_trip():
 @route_matchmaking.route('/dislike_match', methods=['POST'])
 @login_required
 def dislike_match():
+    token = jwt.decode(request.json['token'], app.config['SECRET_KEY'], algorithm=['HS256'])
+    user_id = token['user_id']
     possible_match_id = request.json['possible_match_id']
 
-    query = """DELETE 
-                FROM possible_match_pool
-                WHERE match_id = %s""" % possible_match_id
+    query = """UPDATE possible_match_pool
+                        SET is_driver_liked = case 
+                                              when driver_id = %s then False
+                                              else is_driver_liked
+                                              end,
+                        is_hitchhiker_like = case 
+                                              when hitchhiker_id = %s then False
+                                              else is_hitchhiker_like
+                                              end
+                        WHERE match_id = %s""" % (user_id, user_id, possible_match_id)
 
     conn = db_connection()
 

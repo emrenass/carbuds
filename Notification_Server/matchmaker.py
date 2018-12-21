@@ -1,15 +1,11 @@
 from Backend_API.database.database_interface import *
-from Backend_API.utils.carbuds_config import *
 from Backend_API.rabbitmq.rabbitmq_interface import *
-from Notification_Server.config import *
 
-import googlemaps
 import polyline
-import pandas as pd
-from _datetime import datetime
 from time import sleep
 from pyfcm import FCMNotification
 
+FCM_SERVER_KEY = "AAAAXEaSbDo:APA91bEds96IEbn9D-gdwNVqoXFAbJakdw3m-GpeKWekW4Wgq3l9kmQCnUZTtfOOMtn3tusqWPySHIzwFBv3BzDoLTJV8xPGwZ-dRcdh00Gm1nw3utlG7pakwycuobEIOWynvILdMm-h"
 
 def check_polylines_intersections(driver_poly, hitchikker_poly):
     driver_poly_decoded = polyline.decode(driver_poly)
@@ -37,6 +33,15 @@ def match_possible_trip():
         try:
             conn = db_connection()
             match_list = execute_query(query, conn)
+        except Exception as e:
+            print(e)
+            continue
+
+        query = """delete from possible_match_pool
+                    where trip_start_time < now();"""
+        try:
+            conn = db_connection()
+            commit_query(query, conn)
         except Exception as e:
             print(e)
             continue
