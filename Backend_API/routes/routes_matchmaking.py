@@ -52,7 +52,7 @@ def set_trip_driver():
         print(e)
         return "Database Error"
 
-    find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline)
+    find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, end_lat, end_lon, trip_start_time, route_polyline)
 
     return jsonify(True)
 
@@ -94,7 +94,7 @@ def set_trip_hitchhiker():
     except Exception as e:
         print(e)
         return "Database Error"
-    find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline)
+    find_and_write_driver_candidates(user_id, start_lat, start_lon, end_lat, end_lon, trip_start_time, route_polyline)
     return jsonify(True)
 
 
