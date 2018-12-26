@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 
 import jwt
@@ -168,7 +169,7 @@ def cancel_trip():
         query2 = """DELETE FROM possible_match_pool
                             WHERE driver_id = %s """ % user_id
         delete_sequence.append(query)
-        # delete_sequence.append(query2)
+        delete_sequence.append(query2)
     else:
         query = """DELETE FROM hitchhiker_matchmaking_pool
                             WHERE user_id = %s """ % user_id
@@ -176,7 +177,7 @@ def cancel_trip():
         query2 = """DELETE FROM possible_match_pool
                                     WHERE hitchhiker_id = %s """ % user_id
         delete_sequence.append(query)
-        # delete_sequence.append(query2)
+        delete_sequence.append(query2)
 
     try:
         conn = db_connection()
@@ -186,6 +187,7 @@ def cancel_trip():
         return "Database Error"
 
     return jsonify(True)
+
 
 @route_matchmaking.route('/dislike_match', methods=['POST'])
 @login_required
@@ -300,13 +302,14 @@ def check_active_trip():
         return jsonify(False)
 
 
-def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_time, route_polyline):
-
+def find_and_write_driver_candidates(user_id, start_lat, start_lon, end_lat, end_lon, trip_start_time,
+                                     hitchhiker_polyline):
     query = """SELECT * 
                     FROM driver_matchmaking_pool
                     INNER JOIN driver_profile
                     ON driver_matchmaking_pool.user_id = driver_profile.user_id
                     WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                    WHERE  ST_Distance_Sphere(trip_end_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
                     (SELECT music_preference 
                         from hitchhiker_profile 
                         where hitchhiker_profile.user_id = '%s') && driver_profile.music_preference AND 
@@ -315,6 +318,7 @@ def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_t
                         where id=%s) || ARRAY[]::gender[]) && driver_profile.hitchhiker_gender_preference AND
                     driver_matchmaking_pool.trip_start_time <= (timestamp '%s' + interval '1 hours')""" \
             % (float(start_lat), float(start_lon),
+               float(end_lat), float(end_lon),
                user_id, user_id, trip_start_time)
 
     try:
@@ -328,12 +332,19 @@ def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_t
         gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
         for candidate in driver_result:
             driver_polyline = candidate['destination_polyline']
-            intersection_polyline = check_polylines_intersections(driver_polyline, route_polyline)
+            driver_polyline_array = polyline.decode(driver_polyline)
+            closest_point = get_closest_point_from_polyline(driver_polyline_array,
+                                                            hitchhiker_polyline[0])
+            if not closest_point:
+                continue
+
+            possible_start_lat, possible_start_lon = closest_point
+            intersection_polyline = check_polylines_intersections(driver_polyline, hitchhiker_polyline)
 
             if not intersection_polyline:
                 continue
 
-            inter_start_lat, inter_start_lon = intersection_polyline[0]
+            inter_start_lat, inter_start_lon = (possible_start_lat, possible_start_lon)
             inter_end_lat, inter_end_lon = intersection_polyline[-1]
 
             distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
@@ -345,7 +356,17 @@ def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_t
             intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
 
             if intersection_distance >= 1000:
-                candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
+                directions_result = gmaps.directions("%s, %s" % (inter_start_lat, inter_start_lon),
+                                                     "%s, %s" % (inter_end_lat, inter_end_lon),
+                                                     mode="driving",
+                                                     units='metric',
+                                                     departure_time=datetime.now())
+
+                if not directions_result:
+                    continue
+
+                route_polyline = directions_result[0]['overview_polyline']['points']
+                candidate['intersection_polyline'] = route_polyline
                 candidate['intersection_distance'] = intersection_distance
                 query = """INSERT INTO possible_match_pool 
                                 (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
@@ -363,13 +384,14 @@ def find_and_write_driver_candidates(user_id, start_lat, start_lon, trip_start_t
         return "Google Maps API Error"
 
 
-def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_start_time, driver_polyline):
-
+def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, end_lat, end_lon, trip_start_time,
+                                         driver_polyline):
     query = """SELECT * 
                 FROM hitchhiker_matchmaking_pool
                 INNER JOIN hitchhiker_profile
                 ON hitchhiker_matchmaking_pool.user_id = hitchhiker_profile.user_id
                 WHERE  ST_Distance_Sphere(trip_start_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
+                WHERE  ST_Distance_Sphere(trip_end_point, ST_MakePoint(%f, %f)) <= 1 * 1000 AND
                 (SELECT music_preference 
                     from driver_profile 
                     where Driver_profile.user_id = '%s') && hitchhiker_profile.music_preference AND 
@@ -377,6 +399,7 @@ def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_sta
                     from users 
                     where id=%s) || ARRAY[]::gender[]) && hitchhiker_profile.driver_gender_preference """ \
             % (float(start_lat), float(start_lon),
+               float(end_lat), float(end_lon),
                user_id, user_id)
 
     try:
@@ -389,12 +412,17 @@ def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_sta
         gmaps = googlemaps.Client(key=app.config["DIRECTIONS_API_KEY"])
         for candidate in hitch_result:
             hitchhiker_polyline = candidate['destination_polyline']
+            closest_point = get_closest_point_from_polyline(polyline.decode(driver_polyline),
+                                                            hitchhiker_polyline[0])
+            if not closest_point:
+                continue
+            possible_start_lat, possible_start_lon = closest_point
             intersection_polyline = check_polylines_intersections(driver_polyline, hitchhiker_polyline)
 
             if not intersection_polyline:
                 continue
 
-            inter_start_lat, inter_start_lon = intersection_polyline[0]
+            inter_start_lat, inter_start_lon = (possible_start_lat, possible_start_lon)
             inter_end_lat, inter_end_lon = intersection_polyline[-1]
 
             distance_result = gmaps.distance_matrix("%s, %s" % (inter_start_lat, inter_start_lon),
@@ -406,7 +434,17 @@ def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_sta
             intersection_distance = distance_result['rows'][0]['elements'][0]['distance']['value']
 
             if intersection_distance >= 1000:
-                candidate['intersection_polyline'] = polyline_encoder(intersection_polyline)
+                directions_result = gmaps.directions("%s, %s" % (inter_start_lat, inter_start_lon),
+                                                     "%s, %s" % (inter_end_lat, inter_end_lon),
+                                                     mode="driving",
+                                                     units='metric',
+                                                     departure_time=datetime.now())
+
+                if not directions_result:
+                    continue
+
+                route_polyline = directions_result[0]['overview_polyline']['points']
+                candidate['intersection_polyline'] = route_polyline
                 candidate['intersection_distance'] = intersection_distance
                 query = """INSERT INTO possible_match_pool 
                                 (intersection_polyline, hitchhiker_id, driver_id, trip_start_time)
@@ -422,3 +460,40 @@ def find_and_write_hitchhiker_candidates(user_id, start_lat, start_lon, trip_sta
     except Exception as e:
         print(e)
         return "Google Maps API Error"
+
+
+def distance(origin, destination):
+    lat1, lon1 = origin
+    lat2, lon2 = destination
+    radius = 6371  # km
+
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat / 2) * math.sin(dlat / 2) +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+         math.sin(dlon / 2) * math.sin(dlon / 2))
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    d = radius * c
+
+    return d
+
+
+def get_closest_point_from_polyline(points, latlng):
+    """
+      @points: Points list
+      @latlng: a coordinate
+      returns a point
+    """
+    min_distance = 1
+    index = -1
+    i = 0
+    for point in points:
+        d = distance(point, latlng)
+        if d < min_distance:
+            min_distance = d
+            index = i
+        i += 1
+    if index == -1:
+        return False
+    else:
+        return points[index]

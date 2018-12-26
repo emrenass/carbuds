@@ -25,6 +25,19 @@ def polyline_decoder(poly):
 def match_possible_trip():
     while True:
 
+        query = """delete from possible_match_pool
+                            where trip_start_time < now();"""
+        quer2 = """delete from hitchhiker_matchmaking_pool
+                                    where trip_start_time < now();"""
+        quer3 = """delete from driver_matchmaking_pool
+                                    where trip_start_time < now();"""
+        try:
+            conn = db_connection()
+            commit_query_multiple([query, quer2, quer3], conn)
+        except Exception as e:
+            print(e)
+            continue
+
         query = """select *
                     from possible_match_pool
                     where possible_match_pool.is_driver_liked = true and 
@@ -33,15 +46,6 @@ def match_possible_trip():
         try:
             conn = db_connection()
             match_list = execute_query(query, conn)
-        except Exception as e:
-            print(e)
-            continue
-
-        query = """delete from possible_match_pool
-                    where trip_start_time < now();"""
-        try:
-            conn = db_connection()
-            commit_query(query, conn)
         except Exception as e:
             print(e)
             continue
